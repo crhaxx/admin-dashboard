@@ -1,12 +1,13 @@
 import { Navigate, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
+import { useAuth } from "../providers/AuthProvider";
 
 type ProtectedRouteProps = {
   children: ReactNode;
 };
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const isAuthenticated = true;
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
 
   if (!isAuthenticated) {

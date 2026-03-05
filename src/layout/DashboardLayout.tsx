@@ -1,9 +1,17 @@
-import { Link, Outlet } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../providers/AuthProvider";
 
 export default function DashboardLayout() {
-    return (
-        <div style={{ display: "flex", height: "100vh" }}>
-      {/* Sidebar */}
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
+  return (
+    <div style={{ display: "flex", height: "100vh" }}>
       <aside
         style={{
           width: "220px",
@@ -12,21 +20,33 @@ export default function DashboardLayout() {
           padding: "20px",
         }}
       >
-        <h2>Dashboard</h2>
+        <h2 style={{ marginBottom: "20px" }}>Dashboard</h2>
 
-        <nav style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <Link to="/analytics" style={{ color: "white" }}>Analytics</Link>
-          <Link to="/orders" style={{ color: "white" }}>Orders</Link>
-          <Link to="/products" style={{ color: "white" }}>Products</Link>
-          <Link to="/users" style={{ color: "white" }}>Users</Link>
+        <nav style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <NavLink to="/analytics" style={{ color: "white" }}>Analytics</NavLink>
+          <NavLink to="/orders" style={{ color: "white" }}>Orders</NavLink>
+          <NavLink to="/products" style={{ color: "white" }}>Products</NavLink>
+          <NavLink to="/users" style={{ color: "white" }}>Users</NavLink>
         </nav>
+
+        <button
+          onClick={handleLogout}
+          style={{
+            marginTop: "30px",
+            padding: "10px",
+            background: "#ff4d4d",
+            border: "none",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          Logout
+        </button>
       </aside>
 
-      {/* Main content */}
       <main style={{ flex: 1, padding: "20px" }}>
         <Outlet />
       </main>
     </div>
-
-    )
+  );
 }
