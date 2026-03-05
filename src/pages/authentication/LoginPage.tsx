@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../../providers/AuthProvider";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -13,17 +13,18 @@ export default function LoginPage() {
 
   const from = location.state?.from?.pathname || "/";
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const success = login(username, password);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    if (!success) {
-      setError("Invalid credentials");
-      return;
-    }
+  const success = await login(email, password);
 
-    navigate(from, { replace: true });
-  };
+  if (!success) {
+    setError("Invalid email or password");
+    return;
+  }
+
+  navigate(from, { replace: true });
+};
 
   return (
     <div style={{ padding: "40px" }}>
@@ -32,9 +33,9 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", width: "250px", gap: "10px" }}>
         <input
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
@@ -48,6 +49,10 @@ export default function LoginPage() {
 
         <button type="submit">Login</button>
       </form>
+      <p>
+  Don’t have an account? <Link to="/register">Register</Link>
+</p>
+
     </div>
   );
 }

@@ -7,12 +7,17 @@ import AnalyticsPage from "../pages/analytics/AnalyticsPage";
 import OrdersPage from "../pages/orders/OrdersPage";
 import ProductsPage from "../pages/products/ProductsPage";
 import UsersPage from "../pages/users/UsersPage";
-import LoginPage from "../pages/login/LoginPage";
+import LoginPage from "../pages/authentication/LoginPage";
+import RegisterPage from "../pages/authentication/RegisterPage";
 
 const router = createBrowserRouter([
     {
         path: "/login",
         element: <LoginPage />
+    },
+    {
+        path: "/register",
+        element: <RegisterPage />
     },
   {
     path: "/",
