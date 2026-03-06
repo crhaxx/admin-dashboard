@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../providers/AuthProvider";
 
 export default function RegisterPage() {
+  const [name, setName] = useState("");
+  const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,7 +15,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const success = await register(email, password);
+    const success = await register(name, lastname, email, password);
 
     if (!success) {
       setError("Registration failed");
@@ -28,6 +30,18 @@ export default function RegisterPage() {
       <h1>Register</h1>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", width: "250px", gap: "10px" }}>
+        <input
+          type="text"
+          placeholder="First Name"
+          value={name}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Surname"
+          value={lastname}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLastname(e.target.value)}
+        />
         <input
           type="email"
           placeholder="Email"
@@ -46,6 +60,9 @@ export default function RegisterPage() {
 
         <button type="submit">Create Account</button>
       </form>
+      <p>
+  Have an account? <Link to="/login">Login</Link>
+</p>
     </div>
   );
 }

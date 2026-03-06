@@ -3,12 +3,14 @@ import DashboardLayout from "../layout/DashboardLayout";
 import ProtectedRoute from "./ProtectedRoute";
 
 // Pages
-import AnalyticsPage from "../pages/analytics/AnalyticsPage";
-import OrdersPage from "../pages/orders/OrdersPage";
-import ProductsPage from "../pages/products/ProductsPage";
-import UsersPage from "../pages/users/UsersPage";
+import AnalyticsPage from "../pages/AnalyticsPage";
+import OrdersPage from "../pages/OrdersPage";
+import ProductsPage from "../pages/ProductsPage";
+import UsersPage from "../pages/UsersPage";
 import LoginPage from "../pages/authentication/LoginPage";
 import RegisterPage from "../pages/authentication/RegisterPage";
+import NotFound from "../pages/NotFound";
+import ProfilePage from "../pages/ProfilePage";
 
 const router = createBrowserRouter([
     {
@@ -18,6 +20,10 @@ const router = createBrowserRouter([
     {
         path: "/register",
         element: <RegisterPage />
+    },
+    {
+        path: "/profile",
+        element: <ProfilePage />
     },
   {
     path: "/",
@@ -33,6 +39,10 @@ const router = createBrowserRouter([
       { path: "products", element: <ProductsPage /> },
       { path: "users", element: <UsersPage /> },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />
   },
 ]);
 
