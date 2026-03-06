@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
+import defaultpfp from "../assets/defaultpfp.png";
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth();
@@ -77,6 +78,27 @@ export default function DashboardLayout() {
                 gap: "10px",
               }}
             >
+                {user?.photoURL ? (
+  <img
+    src={user?.photoURL}
+    style={{
+      width: "32px",
+      height: "32px",
+      borderRadius: "50%",
+      objectFit: "cover",
+    }}
+  />
+) : (
+  <img
+    src={defaultpfp}
+    style={{
+      width: "32px",
+      height: "32px",
+      borderRadius: "50%",
+      objectFit: "cover",
+    }}
+  />
+)}
               <span>{user?.firstName} {user?.lastName}</span>
               <span style={{ fontSize: "12px" }}>{open ? "▲" : "▼"}</span>
             </div>

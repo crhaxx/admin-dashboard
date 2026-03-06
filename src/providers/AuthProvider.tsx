@@ -22,13 +22,23 @@ type AuthContextValue = {
   password: string
 ) => Promise<boolean>;
   logout: () => Promise<void>;
+  updateUserProfile: (data: Partial<UserProfile>) => void;
+};
+
+type UserProfile = {
+  uid: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  photoURL?: string;
+  createdAt?: number;
 };
 
 type AuthProviderProps = {
   children: ReactNode;
 };
 
-const AuthContext = createContext<AuthContextValue | null>(null);
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<any>(null);
@@ -88,12 +98,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = () => signOut(auth);
 
+  const updateUserProfile = (data: Partial<any>) => {
+  setUser((prev: any) => ({ ...prev, ...data }));
+};
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthenticated: !!user,
         loading,
+        updateUserProfile,
         login,
         register,
         logout,
