@@ -2,6 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 import defaultpfp from "../assets/defaultpfp.png";
+import {
+  LayoutDashboard,
+  BarChart2,
+  ShoppingCart,
+  Package,
+  Users,
+} from "lucide-react";
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth();
@@ -15,7 +22,6 @@ export default function DashboardLayout() {
     navigate("/login", { replace: true });
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -27,23 +33,86 @@ export default function DashboardLayout() {
   }, []);
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div style={{ display: "flex", height: "100vh", background: "#f5f6fa" }}>
+      
       {/* Sidebar */}
       <aside
         style={{
-          width: "220px",
+          width: "250px",
           background: "#1e1e1e",
           color: "white",
-          padding: "20px",
+          padding: "24px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+          borderRight: "1px solid #2a2a2a",
         }}
       >
-        <h2 style={{ marginBottom: "20px" }}>Dashboard</h2>
+        <img
+          src="/logo/prodify-logo.png"
+          alt="logo"
+          style={{
+            width: "120px",
+            height: "120px",
+            objectFit: "cover",
+            margin: "0 auto -8px auto",
+          }}
+        />
 
-        <nav style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <NavLink to="/analytics" style={{ color: "white" }}>Analytics</NavLink>
-          <NavLink to="/orders" style={{ color: "white" }}>Orders</NavLink>
-          <NavLink to="/products" style={{ color: "white" }}>Products</NavLink>
-          <NavLink to="/users" style={{ color: "white" }}>Users</NavLink>
+        <h2 style={{ marginBottom: "10px", fontSize: "22px", fontWeight: 600 }}>
+          Prodify Dashboard
+        </h2>
+
+        <nav style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          {[
+            { to: "/", label: "Dashboard", icon: <LayoutDashboard color="#D6BEFA" size={20} /> },
+            { to: "/analytics", label: "Analytics", icon: <BarChart2 color="#D6BEFA" size={20} /> },
+            { to: "/orders", label: "Orders", icon: <ShoppingCart color="#D6BEFA" size={20} /> },
+            { to: "/products", label: "Products", icon: <Package color="#D6BEFA" size={20} /> },
+            { to: "/users", label: "Users", icon: <Users color="#D6BEFA" size={20} /> },
+          ].map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                "sidebar-link" + (isActive ? " active" : "")
+              }
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                padding: "12px 16px",
+                borderRadius: "8px",
+                color: "white",
+                textDecoration: "none",
+                fontSize: "15px",
+                transition: "0.25s",
+                position: "relative",
+              }}
+            >
+              {({ isActive }) => (
+                <>
+                  {/* Left active indicator */}
+                  {isActive && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: "4px",
+                        background: "#60d4df", //4f8cff
+                        borderRadius: "4px",
+                      }}
+                    />
+                  )}
+
+                  <span style={{ opacity: 0.9 }}>{item.icon}</span>
+                  <span>{item.label}</span>
+                </>
+              )}
+            </NavLink>
+          ))}
         </nav>
       </aside>
 
@@ -53,16 +122,18 @@ export default function DashboardLayout() {
         {/* Top Bar */}
         <header
           style={{
-            height: "60px",
-            background: "#f5f5f5",
-            borderBottom: "1px solid #ddd",
+            height: "65px",
+            background: "white",
+            borderBottom: "1px solid #e5e5e5",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: "0 20px",
+            padding: "0 24px",
           }}
         >
-          <h3 style={{ margin: 0 }}>Welcome {user?.firstName}</h3>
+          <h3 style={{ margin: 0, fontSize: "20px", fontWeight: 500 }}>
+            Welcome {user?.firstName}
+          </h3>
 
           {/* Dropdown */}
           <div ref={dropdownRef} style={{ position: "relative" }}>
@@ -70,35 +141,24 @@ export default function DashboardLayout() {
               onClick={() => setOpen((prev) => !prev)}
               style={{
                 cursor: "pointer",
-                padding: "8px 12px",
-                background: "#e0e0e0",
-                borderRadius: "6px",
+                padding: "8px 14px",
+                background: "#f0f0f0",
+                borderRadius: "8px",
                 display: "flex",
                 alignItems: "center",
-                gap: "10px",
+                gap: "12px",
+                transition: "0.2s",
               }}
             >
-                {user?.photoURL ? (
-  <img
-    src={user?.photoURL}
-    style={{
-      width: "32px",
-      height: "32px",
-      borderRadius: "50%",
-      objectFit: "cover",
-    }}
-  />
-) : (
-  <img
-    src={defaultpfp}
-    style={{
-      width: "32px",
-      height: "32px",
-      borderRadius: "50%",
-      objectFit: "cover",
-    }}
-  />
-)}
+              <img
+                src={user?.photoURL || defaultpfp}
+                style={{
+                  width: "34px",
+                  height: "34px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
               <span>{user?.firstName} {user?.lastName}</span>
               <span style={{ fontSize: "12px" }}>{open ? "▲" : "▼"}</span>
             </div>
@@ -107,20 +167,21 @@ export default function DashboardLayout() {
               <div
                 style={{
                   position: "absolute",
-                  top: "45px",
+                  top: "48px",
                   right: 0,
                   background: "white",
                   border: "1px solid #ddd",
-                  borderRadius: "6px",
-                  boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                  width: "160px",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  width: "170px",
                   zIndex: 10,
+                  animation: "fadeIn 0.15s ease-out",
                 }}
               >
                 <button
                   style={{
                     width: "100%",
-                    padding: "10px",
+                    padding: "12px",
                     background: "white",
                     border: "none",
                     textAlign: "left",
@@ -137,7 +198,7 @@ export default function DashboardLayout() {
                 <button
                   style={{
                     width: "100%",
-                    padding: "10px",
+                    padding: "12px",
                     background: "white",
                     border: "none",
                     textAlign: "left",
@@ -154,7 +215,7 @@ export default function DashboardLayout() {
         </header>
 
         {/* Page content */}
-        <main style={{ flex: 1, padding: "20px" }}>
+        <main style={{ flex: 1, padding: "24px" }}>
           <Outlet />
         </main>
       </div>

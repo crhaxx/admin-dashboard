@@ -11,6 +11,7 @@ import LoginPage from "../pages/authentication/LoginPage";
 import RegisterPage from "../pages/authentication/RegisterPage";
 import NotFound from "../pages/NotFound";
 import ProfilePage from "../pages/ProfilePage";
+import DashboardPage from "../pages/DashboardPAge";
 
 const router = createBrowserRouter([
     {
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <AnalyticsPage /> },
+      { index: true, element: <DashboardPage /> },
       { path: "analytics", element: <AnalyticsPage /> },
       { path: "orders", element: <OrdersPage /> },
       { path: "products", element: <ProductsPage /> },
