@@ -8,7 +8,10 @@ import {
   ShoppingCart,
   Package,
   Users,
+  Sun,
+  Moon,
 } from "lucide-react";
+import { useTheme } from "../hooks/useTheme";
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth();
@@ -16,6 +19,8 @@ export default function DashboardLayout() {
 
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     await logout();
@@ -33,160 +38,127 @@ export default function DashboardLayout() {
   }, []);
 
   return (
-    <div style={{ display: "flex", height: "100vh", background: "#f5f6fa" }}>
-      
+    <div className="flex min-h-screen bg-[#f5f6fa] dark:bg-[#0a0a0a] transition-colors duration-300">
+
       {/* Sidebar */}
-      <aside
-        style={{
-          width: "250px",
-          background: "#1e1e1e",
-          color: "white",
-          padding: "24px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-          borderRight: "1px solid #2a2a2a",
-        }}
+      <aside className="fixed left-0 top-0 h-screen w-[250px] bg-[#1a1a1a] dark:bg-[#242424] text-white flex flex-col border-r border-[#2a2a2a] dark:border-[#222] p-6">
+
+  {/* Logo */}
+  <div className="flex flex-col items-center mb-4">
+    <img
+      src="/logo/prodify-logo.png"
+      alt="logo"
+      className="w-[120px] h-[120px] object-cover mb-[-8px]"
+    />
+    <h2 className="text-[22px] font-semibold mt-2">Prodify Dashboard</h2>
+  </div>
+
+  {/* Navigation */}
+  <nav className="flex flex-col gap-1 mt-2">
+    {[
+      { to: "/", label: "Dashboard", icon: <LayoutDashboard size={20} color="#D6BEFA" /> },
+      { to: "/analytics", label: "Analytics", icon: <BarChart2 size={20} color="#D6BEFA" /> },
+      { to: "/orders", label: "Orders", icon: <ShoppingCart size={20} color="#D6BEFA" /> },
+      { to: "/products", label: "Products", icon: <Package size={20} color="#D6BEFA" /> },
+      { to: "/users", label: "Users", icon: <Users size={20} color="#D6BEFA" /> },
+    ].map((item) => (
+      <NavLink
+        key={item.to}
+        to={item.to}
+        className={({ isActive }) =>
+          `relative flex items-center gap-3 px-4 py-3 rounded-lg text-[15px] transition-all
+          ${isActive
+            ? "bg-[#2a2a2a] dark:bg-[#111] font-semibold"
+            : "hover:bg-[#2a2a2a] dark:hover:bg-[#111] hover:translate-x-1"}`
+        }
       >
-        <img
-          src="/logo/prodify-logo.png"
-          alt="logo"
-          style={{
-            width: "120px",
-            height: "120px",
-            objectFit: "cover",
-            margin: "0 auto -8px auto",
-          }}
-        />
+        {({ isActive }) => (
+          <>
+            {isActive && (
+              <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-[#60d4df] rounded-r-md"></div>
+            )}
+            <span className="opacity-90">{item.icon}</span>
+            <span>{item.label}</span>
+          </>
+        )}
+      </NavLink>
+    ))}
+  </nav>
 
-        <h2 style={{ marginBottom: "10px", fontSize: "22px", fontWeight: 600 }}>
-          Prodify Dashboard
-        </h2>
+  {/* Management */}
+  <div className="mt-6">
+    <details className="group">
+      <summary className="cursor-pointer px-2 py-2 text-sm font-semibold text-gray-300 hover:text-white transition flex items-center justify-between">
+        Management
+        <span className="transition-transform group-open:rotate-180">▼</span>
+      </summary>
 
-        <nav style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          {[
-            { to: "/", label: "Dashboard", icon: <LayoutDashboard color="#D6BEFA" size={20} /> },
-            { to: "/analytics", label: "Analytics", icon: <BarChart2 color="#D6BEFA" size={20} /> },
-            { to: "/orders", label: "Orders", icon: <ShoppingCart color="#D6BEFA" size={20} /> },
-            { to: "/products", label: "Products", icon: <Package color="#D6BEFA" size={20} /> },
-            { to: "/users", label: "Users", icon: <Users color="#D6BEFA" size={20} /> },
-          ].map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                "sidebar-link" + (isActive ? " active" : "")
-              }
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "12px 16px",
-                borderRadius: "8px",
-                color: "white",
-                textDecoration: "none",
-                fontSize: "15px",
-                transition: "0.25s",
-                position: "relative",
-              }}
-            >
-              {({ isActive }) => (
-                <>
-                  {/* Left active indicator */}
-                  {isActive && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        left: 0,
-                        top: 0,
-                        bottom: 0,
-                        width: "4px",
-                        background: "#60d4df", //4f8cff
-                        borderRadius: "4px",
-                      }}
-                    />
-                  )}
+      <div className="ml-3 mt-2 flex flex-col gap-2">
+        <NavLink className="text-gray-300 hover:text-white text-sm px-2 py-1 rounded transition" to="/settings">
+          Settings
+        </NavLink>
+        <NavLink className="text-gray-300 hover:text-white text-sm px-2 py-1 rounded transition" to="/billing">
+          Billing
+        </NavLink>
+        <NavLink className="text-gray-300 hover:text-white text-sm px-2 py-1 rounded transition" to="/logs">
+          Logs
+        </NavLink>
+      </div>
+    </details>
+  </div>
 
-                  <span style={{ opacity: 0.9 }}>{item.icon}</span>
-                  <span>{item.label}</span>
-                </>
-              )}
-            </NavLink>
-          ))}
-        </nav>
-      </aside>
+  <div className="flex-1"></div>
+
+  {/* Theme Switcher */}
+  <div className="flex items-center justify-between bg-[#2a2a2a] dark:bg-[#111] px-3 py-2 rounded-lg mb-3">
+    <span className="text-sm text-gray-300">Theme</span>
+
+    <button
+      onClick={toggleTheme}
+      className="bg-[#3a3a3a] dark:bg-[#222] px-3 py-1 rounded text-sm hover:bg-[#4a4a4a] dark:hover:bg-[#333] transition flex items-center justify-center"
+    >
+      <div className="relative w-5 h-5">
+        <Sun className={`absolute w-5 h-5 transition-all ${theme === "dark" ? "opacity-0 scale-0" : "opacity-100 scale-100"}`} />
+        <Moon className={`absolute w-5 h-5 transition-all ${theme === "dark" ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} />
+      </div>
+    </button>
+  </div>
+
+  {/* Footer */}
+  <div className="text-center text-xs text-gray-400 mt-2">
+    Prodify © {new Date().getFullYear()}
+    <br />
+    Build smarter. Manage faster.
+  </div>
+</aside>
 
       {/* Main area */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        
+      <div className="flex flex-col flex-1 ml-[250px]">
+
         {/* Top Bar */}
-        <header
-          style={{
-            height: "65px",
-            background: "white",
-            borderBottom: "1px solid #e5e5e5",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 24px",
-          }}
-        >
-          <h3 style={{ margin: 0, fontSize: "20px", fontWeight: 500 }}>
+        <header className="h-[65px] bg-white dark:bg-[#111] border-b border-gray-200 dark:border-[#333] flex items-center justify-between px-6">
+          <h3 className="text-[20px] font-medium text-black dark:text-white">
             Welcome {user?.firstName}
           </h3>
 
           {/* Dropdown */}
-          <div ref={dropdownRef} style={{ position: "relative" }}>
+          <div ref={dropdownRef} className="relative">
             <div
               onClick={() => setOpen((prev) => !prev)}
-              style={{
-                cursor: "pointer",
-                padding: "8px 14px",
-                background: "#f0f0f0",
-                borderRadius: "8px",
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                transition: "0.2s",
-              }}
+              className="cursor-pointer px-4 py-2 bg-[#f0f0f0] dark:bg-[#454545] rounded-lg flex items-center gap-3 transition"
             >
               <img
                 src={user?.photoURL || defaultpfp}
-                style={{
-                  width: "34px",
-                  height: "34px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
+                className="w-[34px] h-[34px] rounded-full object-cover"
               />
-              <span>{user?.firstName} {user?.lastName}</span>
-              <span style={{ fontSize: "12px" }}>{open ? "▲" : "▼"}</span>
+              <span className="text-black dark:text-white">{user?.firstName} {user?.lastName}</span>
+              <span className="text-xs text-black dark:text-white">{open ? "▲" : "▼"}</span>
             </div>
 
             {open && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "48px",
-                  right: 0,
-                  background: "white",
-                  border: "1px solid #ddd",
-                  borderRadius: "8px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                  width: "170px",
-                  zIndex: 10,
-                  animation: "fadeIn 0.15s ease-out",
-                }}
-              >
+              <div className="absolute top-12 right-0 bg-white dark:bg-[#111] border border-gray-200 dark:border-[#333] rounded-lg shadow-lg w-[170px] z-10 animate-dropdown">
                 <button
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    background: "white",
-                    border: "none",
-                    textAlign: "left",
-                    cursor: "pointer",
-                  }}
+                  className="w-full px-4 py-3 bg-white dark:bg-[#111] text-left hover:bg-gray-100 dark:hover:bg-[#222] transition text-black dark:text-white"
                   onClick={() => {
                     navigate("/profile");
                     setOpen(false);
@@ -196,15 +168,7 @@ export default function DashboardLayout() {
                 </button>
 
                 <button
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    background: "white",
-                    border: "none",
-                    textAlign: "left",
-                    cursor: "pointer",
-                    color: "red",
-                  }}
+                  className="w-full px-4 py-3 bg-white dark:bg-[#111] text-left text-red-500 hover:bg-gray-100 dark:hover:bg-[#222] transition"
                   onClick={handleLogout}
                 >
                   Logout
@@ -215,7 +179,7 @@ export default function DashboardLayout() {
         </header>
 
         {/* Page content */}
-        <main style={{ flex: 1, padding: "24px" }}>
+        <main className="flex-1 p-6 animate-fadeSlideIn">
           <Outlet />
         </main>
       </div>

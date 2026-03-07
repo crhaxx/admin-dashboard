@@ -11,7 +11,7 @@ import LoginPage from "../pages/authentication/LoginPage";
 import RegisterPage from "../pages/authentication/RegisterPage";
 import NotFound from "../pages/NotFound";
 import ProfilePage from "../pages/ProfilePage";
-import DashboardPage from "../pages/DashboardPAge";
+import DashboardPage from "../pages/DashboardPage";
 
 const router = createBrowserRouter([
     {

@@ -21,52 +21,6 @@ export default function Profile() {
 
   const navigate = useNavigate();
 
-  const cardStyle = {
-    background: "white",
-    padding: "24px",
-    borderRadius: "12px",
-    boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
-    marginBottom: "24px",
-    maxWidth: "420px",
-  };
-
-  const labelStyle = {
-    fontWeight: 500,
-    marginBottom: "6px",
-    display: "block",
-  };
-
-  const inputStyle = {
-    width: "100%",
-    padding: "10px 12px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
-    marginBottom: "14px",
-    fontSize: "15px",
-    transition: "0.2s",
-  };
-
-  const buttonPrimary = {
-    padding: "10px 16px",
-    background: "#4f8cff",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontSize: "15px",
-    fontWeight: 500,
-    transition: "0.2s",
-  };
-
-  const buttonSecondary = {
-    padding: "8px 14px",
-    background: "#eee",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontSize: "14px",
-  };
-
   const handleSave = async () => {
     try {
       await updateDoc(doc(db, "users", user.uid), {
@@ -133,109 +87,101 @@ export default function Profile() {
   };
 
   return (
-  <div style={{ padding: "20px" }}>
-    <button onClick={() => navigate("/")} style={buttonSecondary}>
-      ← Zpět na dashboard
-    </button>
+    <div className="min-h-screen p-6 text-black dark:text-white transition-colors duration-300 bg-white dark:bg-black">
 
-    <h1 style={{ marginTop: "20px", marginBottom: "20px" }}>
-      Nastavení profilu
-    </h1>
+      {/* Back button */}
+      <button
+        onClick={() => navigate("/")}
+        className="px-4 py-2 bg-gray-200 dark:bg-[#222] border border-gray-300 dark:border-[#444] rounded-lg text-sm hover:bg-gray-300 dark:hover:bg-[#333] transition"
+      >
+        ← Zpět na dashboard
+      </button>
 
-    {/* GRID LAYOUT */}
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: "24px",
-        alignItems: "start",
-      }}
-    >
-      {/* Profilová fotka */}
-      <div style={cardStyle}>
-        <h3 style={{ marginBottom: "16px" }}>Profilová fotka</h3>
+      <h1 className="text-2xl font-semibold mt-6 mb-6">Nastavení profilu</h1>
 
-        {photoURL && (
-          <img
-            src={photoURL}
-            alt="Profilová fotka"
-            style={{
-              width: "140px",
-              height: "140px",
-              borderRadius: "50%",
-              objectFit: "cover",
-              marginBottom: "14px",
-              border: "3px solid #e5e5e5",
-            }}
+      {/* GRID */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {/* Profile photo */}
+        <div className="bg-white dark:bg-black p-6 rounded-xl shadow-md transition-colors duration-300">
+          <h3 className="text-lg font-semibold mb-4">Profilová fotka</h3>
+
+          {photoURL && (
+            <img
+              src={photoURL}
+              alt="Profilová fotka"
+              className="w-36 h-36 rounded-full object-cover border-4 border-gray-200 dark:border-[#333] mb-4"
+            />
+          )}
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoUpload}
+            className="text-sm"
           />
-        )}
+        </div>
 
-        <input type="file" accept="image/*" onChange={handlePhotoUpload} />
+        {/* Personal info */}
+        <div className="bg-white dark:bg-[#111] p-6 rounded-xl shadow-md transition-colors duration-300">
+          <h3 className="text-lg font-semibold mb-4">Osobní údaje</h3>
+
+          <label className="font-medium mb-1 block">Jméno</label>
+          <input
+            className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] text-black dark:text-white mb-4"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+
+          <label className="font-medium mb-1 block">Příjmení</label>
+          <input
+            className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] text-black dark:text-white mb-4"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+
+          <button
+            onClick={handleSave}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+          >
+            Uložit změny
+          </button>
+        </div>
       </div>
 
-      {/* Osobní údaje */}
-      <div style={cardStyle}>
-        <h3 style={{ marginBottom: "16px" }}>Osobní údaje</h3>
+      {/* Password change */}
+      <div className="bg-white dark:bg-[#111] p-6 rounded-xl shadow-md mt-6 transition-colors duration-300">
+        <h3 className="text-lg font-semibold mb-4">Změna hesla</h3>
 
-        <label style={labelStyle}>Jméno</label>
+        <label className="font-medium mb-1 block">Aktuální heslo</label>
         <input
-          style={inputStyle}
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
+          type="password"
+          className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] text-black dark:text-white mb-4"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
         />
 
-        <label style={labelStyle}>Příjmení</label>
+        <label className="font-medium mb-1 block">Nové heslo</label>
         <input
-          style={inputStyle}
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
+          type="password"
+          className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] text-black dark:text-white mb-4"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
         />
 
-        <button style={buttonPrimary} onClick={handleSave}>
-          Uložit změny
+        <button
+          onClick={handlePasswordChange}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+        >
+          Změnit heslo
         </button>
       </div>
+
+      {message && (
+        <p className="mt-4 px-4 py-3 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-lg max-w-md">
+          {message}
+        </p>
+      )}
     </div>
-
-    {/* Změna hesla – přes celou šířku */}
-    <div style={{ ...cardStyle, maxWidth: "100%", marginTop: "24px" }}>
-      <h3 style={{ marginBottom: "16px" }}>Změna hesla</h3>
-
-      <label style={labelStyle}>Aktuální heslo</label>
-      <input
-        type="password"
-        style={inputStyle}
-        value={currentPassword}
-        onChange={(e) => setCurrentPassword(e.target.value)}
-      />
-
-      <label style={labelStyle}>Nové heslo</label>
-      <input
-        type="password"
-        style={inputStyle}
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
-      />
-
-      <button style={buttonPrimary} onClick={handlePasswordChange}>
-        Změnit heslo
-      </button>
-    </div>
-
-    {message && (
-      <p
-        style={{
-          marginTop: "10px",
-          padding: "10px 14px",
-          background: "#e8f0ff",
-          borderRadius: "8px",
-          color: "#2a4dbf",
-          maxWidth: "420px",
-        }}
-      >
-        {message}
-      </p>
-    )}
-  </div>
-);
+  );
 }
