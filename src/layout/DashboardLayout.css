@@ -1,0 +1,39 @@
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f6fa;
+}
+
+.dark .dashboard-layout {
+  background: #0a0a0a;
+}
+
+.sidebar {
+  width: 260px;
+  background: #111;
+  color: white;
+  padding: 24px 16px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: 0.25s ease;
+}
+
+.sidebar-link:hover {
+  background: #2a2a2a;
+  transform: translateX(6px);
+}
+
+.sidebar-link.active {
+  background: #333;
+}
+
+.main-content {
+  flex: 1;
+  padding: 32px;
+}

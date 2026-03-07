@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
+import "./DashboardLayout.css";
 import defaultpfp from "../assets/defaultpfp.png";
 import {
   LayoutDashboard,
@@ -38,7 +39,7 @@ export default function DashboardLayout() {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-[#f5f6fa] dark:bg-[#0a0a0a] transition-colors duration-300">
+    <div className="dashboard-layout">
 
       {/* Sidebar */}
       <aside
@@ -144,7 +145,7 @@ export default function DashboardLayout() {
 </aside>
 
       {/* Main area */}
-      <div className="flex flex-col flex-1 ml-[250px]">
+      <div className="main-content">
 
         {/* Top Bar */}
         <header className="h-[65px] bg-white dark:bg-[#111] border-b border-gray-200 dark:border-[#333] flex items-center justify-between px-6">
