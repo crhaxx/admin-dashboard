@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import AppRoutes from "./routes/AppRoutes";
 import { AuthProvider } from "./providers/AuthProvider";
@@ -7,7 +6,6 @@ import { ProductsProvider } from "./providers/ProductsProvider";
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
     <AuthProvider>
       <ProductsProvider>
         <Toaster
@@ -23,5 +21,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <AppRoutes />
       </ProductsProvider>
     </AuthProvider>
-  </React.StrictMode>,
 )

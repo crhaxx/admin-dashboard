@@ -16,11 +16,11 @@ type AuthContextValue = {
   loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (
-  firstName: string,
-  lastName: string,
-  email: string,
-  password: string
-) => Promise<boolean>;
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ) => Promise<boolean>;
   logout: () => Promise<void>;
   updateUserProfile: (data: Partial<UserProfile>) => void;
 };
@@ -45,29 +45,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-    if (firebaseUser) {
-      // Load Firestore profile
-      const snap = await getDoc(doc(db, "users", firebaseUser.uid));
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const snap = await getDoc(doc(db, "users", firebaseUser.uid));
 
-      if (snap.exists()) {
-        setUser({
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          ...snap.data(), // firstName, lastName, etc.
-        });
+        if (snap.exists()) {
+          setUser({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            ...snap.data(),
+          });
+        } else {
+          setUser(firebaseUser);
+        }
       } else {
-        setUser(firebaseUser);
+        setUser(null);
       }
-    } else {
-      setUser(null);
-    }
 
-    setLoading(false);
-  });
+      setLoading(false);
+    });
 
-  return () => unsub();
-}, []);
+    return () => unsub();
+  }, []);
 
   const login = async (email: string, password: string) => {
     try {
@@ -78,29 +77,38 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const register = async (firstName: string, lastName: string, email: string, password: string) => {
-  try {
-    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+  const register = async (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ) => {
+    try {
+      const userCred = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-    await setDoc(doc(db, "users", userCred.user.uid), {
-  firstName,
-  lastName,
-  email,
-  createdAt: Date.now(),
-});
+      await setDoc(doc(db, "users", userCred.user.uid), {
+        firstName,
+        lastName,
+        email,
+        createdAt: Date.now(),
+      });
 
-    return true;
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
-};
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  };
 
   const logout = () => signOut(auth);
 
   const updateUserProfile = (data: Partial<any>) => {
-  setUser((prev: any) => ({ ...prev, ...data }));
-};
+    setUser((prev: any) => ({ ...prev, ...data }));
+  };
 
   return (
     <AuthContext.Provider

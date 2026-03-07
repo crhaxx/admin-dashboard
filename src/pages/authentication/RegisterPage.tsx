@@ -26,43 +26,102 @@ export default function RegisterPage() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Register</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", width: "250px", gap: "10px" }}>
-        <input
-          type="text"
-          placeholder="First Name"
-          value={name}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Surname"
-          value={lastname}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLastname(e.target.value)}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-        />
+        <h1 className="text-3xl font-semibold text-center text-gray-900 dark:text-white">
+          Create an account
+        </h1>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-        />
+        <p className="text-center text-gray-500 dark:text-gray-400 mt-2 mb-6">
+          Join the dashboard platform
+        </p>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-        <button type="submit">Create Account</button>
-      </form>
-      <p>
-  Have an account? <Link to="/login">Login</Link>
-</p>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              First Name
+            </label>
+            <input
+              type="text"
+              placeholder="John"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 
+                         bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:ring-2 focus:ring-black dark:focus:ring-gray-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Surname
+            </label>
+            <input
+              type="text"
+              placeholder="Doe"
+              value={lastname}
+              onChange={(e) => setLastname(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 
+                         bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:ring-2 focus:ring-black dark:focus:ring-gray-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 
+                         bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:ring-2 focus:ring-black dark:focus:ring-gray-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 
+                         bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white 
+                         focus:ring-2 focus:ring-black dark:focus:ring-gray-500 outline-none"
+            />
+          </div>
+
+          {error && (
+            <p className="text-red-500 text-sm">{error}</p>
+          )}
+
+          <button
+            type="submit"
+            className="mt-2 w-full py-2 bg-black dark:bg-gray-700 text-white rounded-lg 
+                       font-medium hover:opacity-90 transition"
+          >
+            Create Account
+          </button>
+        </form>
+
+        <p className="text-center text-gray-600 dark:text-gray-400 mt-6 text-sm">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-black dark:text-white font-semibold hover:underline"
+          >
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
