@@ -5,7 +5,7 @@ import ProtectedRoute from "./ProtectedRoute";
 // Pages
 import AnalyticsPage from "../pages/AnalyticsPage";
 import OrdersPage from "../pages/OrdersPage";
-import ProductsPage from "../pages/ProductsPage";
+import ProductsPage from "../pages/products/ProductsPage";
 import UsersPage from "../pages/UsersPage";
 import LoginPage from "../pages/authentication/LoginPage";
 import RegisterPage from "../pages/authentication/RegisterPage";
