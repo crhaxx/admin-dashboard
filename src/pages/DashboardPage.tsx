@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useProducts } from "../providers/ProductsProvider";
 import {
   ShoppingCart,
   DollarSign,
@@ -52,6 +54,9 @@ export default function DashboardPage() {
 }, []);
 
 const [openActions, setOpenActions] = useState(false);
+const navigate = useNavigate();
+
+const { products } = useProducts();
 
 
   return (
@@ -149,7 +154,7 @@ const [openActions, setOpenActions] = useState(false);
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Products</p>
-              <h2 className="text-2xl font-bold mt-1">12</h2>
+              <h2 className="text-2xl font-bold mt-1">{products.length}</h2>
             </div>
             <div className="bg-orange-100 p-3 rounded-full">
               <Package className="text-orange-600" size={26} />
@@ -173,7 +178,7 @@ const [openActions, setOpenActions] = useState(false);
 
       {/* Quick Links */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <button className="flex items-center justify-between bg-white p-4 rounded-xl shadow hover:shadow-md transition border">
+        <button onClick={() => navigate("/products")} className="flex items-center justify-between bg-white p-4 rounded-xl shadow hover:shadow-md transition border">
           <div>
             <h3 className="font-semibold text-gray-800">Manage Products</h3>
             <p className="text-gray-500 text-sm">Edit, add or remove items</p>
@@ -181,7 +186,7 @@ const [openActions, setOpenActions] = useState(false);
           <Package className="text-gray-600" size={26} />
         </button>
 
-        <button className="flex items-center justify-between bg-white p-4 rounded-xl shadow hover:shadow-md transition border">
+        <button onClick={() => navigate("/orders")} className="flex items-center justify-between bg-white p-4 rounded-xl shadow hover:shadow-md transition border">
           <div>
             <h3 className="font-semibold text-gray-800">View Orders</h3>
             <p className="text-gray-500 text-sm">Track and update orders</p>
@@ -189,7 +194,7 @@ const [openActions, setOpenActions] = useState(false);
           <ShoppingCart className="text-gray-600" size={26} />
         </button>
 
-        <button className="flex items-center justify-between bg-white p-4 rounded-xl shadow hover:shadow-md transition border">
+        <button onClick={() => navigate("/users")} className="flex items-center justify-between bg-white p-4 rounded-xl shadow hover:shadow-md transition border">
           <div>
             <h3 className="font-semibold text-gray-800">User Management</h3>
             <p className="text-gray-500 text-sm">Invite or manage users</p>
@@ -197,7 +202,7 @@ const [openActions, setOpenActions] = useState(false);
           <Users className="text-gray-600" size={26} />
         </button>
 
-        <button className="flex items-center justify-between bg-white p-4 rounded-xl shadow hover:shadow-md transition border">
+        <button onClick={() => navigate("/settings")} className="flex items-center justify-between bg-white p-4 rounded-xl shadow hover:shadow-md transition border">
           <div>
             <h3 className="font-semibold text-gray-800">Settings</h3>
             <p className="text-gray-500 text-sm">System & account settings</p>

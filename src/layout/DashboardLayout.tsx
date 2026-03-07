@@ -41,13 +41,22 @@ export default function DashboardLayout() {
     <div className="flex min-h-screen bg-[#f5f6fa] dark:bg-[#0a0a0a] transition-colors duration-300">
 
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 h-screen w-[250px] bg-[#1a1a1a] dark:bg-[#242424] text-white flex flex-col border-r border-[#2a2a2a] dark:border-[#222] p-6">
+      <aside
+  className="
+    fixed left-0 top-0 h-screen w-[250px]
+    bg-white text-gray-900 border-r border-gray-200
+    dark:bg-[#242424] dark:text-white dark:border-[#222]
+    flex flex-col p-6
+  "
+>
+
 
   {/* Logo */}
   <div className="flex flex-col items-center mb-4">
     <img
       src="/logo/prodify-logo.png"
       alt="logo"
+      onClick={() => navigate("/")}
       className="w-[120px] h-[120px] object-cover mb-[-8px]"
     />
     <h2 className="text-[22px] font-semibold mt-2">Prodify Dashboard</h2>
@@ -63,15 +72,17 @@ export default function DashboardLayout() {
       { to: "/users", label: "Users", icon: <Users size={20} color="#D6BEFA" /> },
     ].map((item) => (
       <NavLink
-        key={item.to}
-        to={item.to}
-        className={({ isActive }) =>
-          `relative flex items-center gap-3 px-4 py-3 rounded-lg text-[15px] transition-all
-          ${isActive
-            ? "bg-[#2a2a2a] dark:bg-[#111] font-semibold"
-            : "hover:bg-[#2a2a2a] dark:hover:bg-[#111] hover:translate-x-1"}`
-        }
-      >
+  key={item.to}
+  to={item.to}
+  className={({ isActive }) =>
+    `relative flex items-center gap-3 px-4 py-3 rounded-lg text-[15px] transition-all
+    ${
+      isActive
+        ? "bg-gray-100 dark:bg-[#111] font-semibold"
+        : "hover:bg-gray-100 dark:hover:bg-[#111] hover:translate-x-1"
+    }`
+  }
+>
         {({ isActive }) => (
           <>
             {isActive && (
@@ -88,19 +99,19 @@ export default function DashboardLayout() {
   {/* Management */}
   <div className="mt-6">
     <details className="group">
-      <summary className="cursor-pointer px-2 py-2 text-sm font-semibold text-gray-300 hover:text-white transition flex items-center justify-between">
+      <summary className="cursor-pointer px-2 py-2 text-sm font-semibold text-black dark:text-gray-300 hover:text-gray-500 dark:hover:text-white  transition flex items-center justify-between">
         Management
         <span className="transition-transform group-open:rotate-180">▼</span>
       </summary>
 
       <div className="ml-3 mt-2 flex flex-col gap-2">
-        <NavLink className="text-gray-300 hover:text-white text-sm px-2 py-1 rounded transition" to="/settings">
+        <NavLink className="text-black dark:text-gray-300 hover:text-gray-500 dark:hover:text-white text-sm px-2 py-1 rounded transition" to="/settings">
           Settings
         </NavLink>
-        <NavLink className="text-gray-300 hover:text-white text-sm px-2 py-1 rounded transition" to="/billing">
+        <NavLink className="text-black dark:text-gray-300 hover:text-gray-500 dark:hover:text-white  text-sm px-2 py-1 rounded transition" to="/billing">
           Billing
         </NavLink>
-        <NavLink className="text-gray-300 hover:text-white text-sm px-2 py-1 rounded transition" to="/logs">
+        <NavLink className="text-black dark:text-gray-300 hover:text-gray-500 dark:hover:text-white  text-sm px-2 py-1 rounded transition" to="/logs">
           Logs
         </NavLink>
       </div>
@@ -110,19 +121,19 @@ export default function DashboardLayout() {
   <div className="flex-1"></div>
 
   {/* Theme Switcher */}
-  <div className="flex items-center justify-between bg-[#2a2a2a] dark:bg-[#111] px-3 py-2 rounded-lg mb-3">
-    <span className="text-sm text-gray-300">Theme</span>
+  <div className="flex items-center justify-between bg-gray-100 dark:bg-[#111] px-3 py-2 rounded-lg mb-3">
+  <span className="text-sm text-gray-600 dark:text-gray-300">Theme</span>
 
-    <button
-      onClick={toggleTheme}
-      className="bg-[#3a3a3a] dark:bg-[#222] px-3 py-1 rounded text-sm hover:bg-[#4a4a4a] dark:hover:bg-[#333] transition flex items-center justify-center"
-    >
-      <div className="relative w-5 h-5">
-        <Sun className={`absolute w-5 h-5 transition-all ${theme === "dark" ? "opacity-0 scale-0" : "opacity-100 scale-100"}`} />
-        <Moon className={`absolute w-5 h-5 transition-all ${theme === "dark" ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} />
-      </div>
-    </button>
-  </div>
+  <button
+    onClick={toggleTheme}
+    className="bg-gray-200 dark:bg-[#222] px-3 py-1 rounded text-sm hover:bg-gray-300 dark:hover:bg-[#333] transition flex items-center justify-center"
+  >
+    <div className="relative w-5 h-5">
+      <Sun className={`absolute w-5 h-5 transition-all ${theme === "dark" ? "opacity-0 scale-0" : "opacity-100 scale-100"}`} />
+      <Moon className={`absolute w-5 h-5 transition-all ${theme === "dark" ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} />
+    </div>
+  </button>
+</div>
 
   {/* Footer */}
   <div className="text-center text-xs text-gray-400 mt-2">

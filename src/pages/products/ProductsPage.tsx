@@ -10,6 +10,7 @@ import {
   deleteDoc,
   updateDoc,
 } from "firebase/firestore";
+import toast from "react-hot-toast";
 
 type CategoryDoc = {
   id: string;
@@ -473,9 +474,9 @@ export default function ProductsPage() {
     );
 
     if (exists) {
-      alert("Category already exists");
-      return;
-    }
+  toast.error("Category already exists");
+  return;
+}
 
     await addDoc(collection(db, "categories"), {
       name,
@@ -660,9 +661,9 @@ export default function ProductsPage() {
     );
 
     if (exists) {
-      alert("Category already exists");
-      return;
-    }
+  toast.error("Category already exists");
+  return;
+}
 
     await addDoc(collection(db, "categories"), {
       name,
@@ -792,9 +793,9 @@ export default function ProductsPage() {
     );
 
     if (exists) {
-      alert("Category already exists");
-      return;
-    }
+  toast.error("Category already exists");
+  return;
+}
 
 
                   await addDoc(collection(db, "categories"), {
