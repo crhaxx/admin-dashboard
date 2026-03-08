@@ -4,7 +4,7 @@ import ProtectedRoute from "./ProtectedRoute";
 
 // Pages
 import AnalyticsPage from "../pages/AnalyticsPage";
-import OrdersPage from "../pages/OrdersPage";
+import OrdersPage from "../pages/orders/OrdersPage";
 import ProductsPage from "../pages/products/ProductsPage";
 import UsersPage from "../pages/UsersPage";
 import LoginPage from "../pages/authentication/LoginPage";
@@ -12,6 +12,7 @@ import RegisterPage from "../pages/authentication/RegisterPage";
 import NotFound from "../pages/NotFound";
 import ProfilePage from "../pages/ProfilePage";
 import DashboardPage from "../pages/DashboardPage";
+import OrderDetailPage from "../pages/orders/OrderDetailPage";
 
 const router = createBrowserRouter([
     {
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
       { index: true, element: <DashboardPage /> },
       { path: "analytics", element: <AnalyticsPage /> },
       { path: "orders", element: <OrdersPage /> },
+      { path: "order/:id", element: <OrderDetailPage /> },
       { path: "products", element: <ProductsPage /> },
       { path: "users", element: <UsersPage /> },
     ],

@@ -7,9 +7,7 @@ import {
   BarChart2,
   ShoppingCart,
   Package,
-  Users,
-  Sun,
-  Moon,
+  Users
 } from "lucide-react";
 
 export default function DashboardLayout() {
