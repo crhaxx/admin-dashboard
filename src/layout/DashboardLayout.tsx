@@ -169,7 +169,7 @@ export default function DashboardLayout() {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-6 animate-fadeSlideIn">
+        <main className="flex-1 p-6 animate-fadeSlideInd">
           <Outlet />
         </main>
       </div>

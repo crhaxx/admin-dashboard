@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { doc, getDoc, updateDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, updateDoc, deleteDoc, serverTimestamp, collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useEffect, useState } from "react";
 import { Loader2, Clock, CheckCircle, Truck, PackageCheck } from "lucide-react";
@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useAuth } from "../../providers/AuthProvider";
+import { useProducts } from "../../providers/ProductsProvider";
 
 /* ---------------------------------------------------
    TIMELINE COMPONENT
@@ -31,41 +33,46 @@ const Timeline = ({ order }: { order: any }) => {
   };
 
   return (
-    <div className="flex items-center justify-between mt-8 mb-8">
+    <div className="flex items-center mt-8 mb-8">
       {steps.map((step, index) => {
         const isActive = index <= currentIndex;
         const date = getDate(step.key);
 
         return (
-          <div key={step.key} className="flex flex-col items-center flex-1">
-            <div
-              className={`
-                w-10 h-10 rounded-full flex items-center justify-center
-                ${isActive ? "bg-indigo-600 text-white" : "bg-gray-300 dark:bg-[#333] text-gray-600"}
-              `}
-            >
-              {step.icon}
+          <div key={step.key} className="flex items-center flex-1">
+            {/* ICON */}
+            <div className="flex flex-col items-center">
+              <div
+                className={`
+                  w-10 h-10 rounded-full flex items-center justify-center
+                  ${isActive ? "bg-indigo-600 text-white" : "bg-gray-300 dark:bg-[#333] text-gray-600"}
+                `}
+              >
+                {step.icon}
+              </div>
+
+              <p
+                className={`mt-2 text-sm font-medium ${
+                  isActive ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500"
+                }`}
+              >
+                {step.label}
+              </p>
+
+              {/* ALWAYS SHOW DATE IF EXISTS */}
+              {date && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {date}
+                </p>
+              )}
             </div>
 
-            <p
-              className={`mt-2 text-sm font-medium ${
-                isActive ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500"
-              }`}
-            >
-              {step.label}
-            </p>
-
-            {date && (
-              <p className="text-xs text-gray-500 mt-1">
-                {date}
-              </p>
-            )}
-
+            {/* LINE BETWEEN STEPS */}
             {index < steps.length - 1 && (
               <div
                 className={`
-                  h-1 w-full mt-3
-                  ${isActive ? "bg-indigo-600" : "bg-gray-300 dark:bg-[#333]"}
+                  flex-1 h-1 mx-3
+                  ${index < currentIndex ? "bg-indigo-600" : "bg-gray-300 dark:bg-[#333]"}
                 `}
               ></div>
             )}
@@ -85,8 +92,12 @@ export default function OrderDetailPage() {
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const { products } = useProducts();
+
+  const { user } = useAuth();
+
   /* ---------------- PDF EXPORT ---------------- */
-  const exportPDF = () => {
+  const exportPDF = async () => {
     const doc = new jsPDF();
 
     doc.setFontSize(18);
@@ -119,6 +130,13 @@ export default function OrderDetailPage() {
         `$${(item.qty * item.price).toFixed(2)}`,
       ]),
     });
+
+    await addDoc(collection(db, "activity"), {
+        userName: user.firstName + " " + user.lastName,
+        userId: user.uid,
+        action: "Exported order " + order.id + " to pdf",
+        timestamp: Date.now(),
+      });
 
     doc.save(`order_${order.id}.pdf`);
   };
@@ -190,6 +208,12 @@ export default function OrderDetailPage() {
       });
 
       setOrder((prev: any) => ({ ...prev, [field]: value }));
+      await addDoc(collection(db, "activity"), {
+        userName: user.firstName + " " + user.lastName,
+        userId: user.uid,
+        action: "Updated order " + order.id + " shipping details",
+        timestamp: Date.now(),
+      });
       toast.success("Shipping info updated");
     } catch (err) {
       console.error(err);
@@ -208,7 +232,17 @@ export default function OrderDetailPage() {
 
       await updateDoc(doc(db, "orders", order.id), updates);
 
-      setOrder((prev: any) => ({ ...prev, ...updates }));
+      const freshSnap = await getDoc(doc(db, "orders", order.id));
+      setOrder({ id: order.id, ...freshSnap.data() });
+
+    //   setOrder((prev: any) => ({ ...prev, ...updates }));
+
+      await addDoc(collection(db, "activity"), {
+        userName: user.firstName + " " + user.lastName,
+        userId: user.uid,
+        action: "Updated order " + order.id + " status to: " + newStatus,
+        timestamp: Date.now(),
+      });
       toast.success("Status updated");
     } catch (err) {
       console.error(err);
@@ -221,7 +255,15 @@ export default function OrderDetailPage() {
     if (!confirm("Do you really want to delete this order?")) return;
 
     try {
-      await deleteDoc(doc(db, "orders", order.id));
+     await deleteDoc(doc(db, "orders", order.id));
+     
+      await addDoc(collection(db, "activity"), {
+        userName: user.firstName + " " + user.lastName,
+        userId: user.uid,
+        action: "Deleted order: " + order.id,
+        timestamp: Date.now(),
+      });
+
       toast.success("Order deleted");
       navigate("/orders");
     } catch (err) {
@@ -374,20 +416,32 @@ export default function OrderDetailPage() {
           </thead>
 
           <tbody>
-            {order.items?.map((item: any, i: number) => (
-              <tr
-                key={i}
-                className="border-t border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#222] transition"
-              >
-                <td className="p-3 font-medium text-white">{item.name}</td>
-                <td className="p-3 text-white">{item.qty}</td>
-                <td className="p-3 text-white">${item.price.toFixed(2)}</td>
-                <td className="p-3 font-semibold text-white">
-                  ${(item.qty * item.price).toFixed(2)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {order.items?.map((item: any, i: number) => {
+    const product = products.find(p => p.id === item.productId);
+
+    return (
+      <tr
+        key={i}
+        className="border-t border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#222] transition"
+      >
+        <td className="p-3 font-medium text-white flex items-center gap-3">
+          <img
+            src={item?.images?.[0] || "/placeholder.png"}
+            alt={item.name}
+            className="w-12 h-12 rounded-lg object-cover border border-[#333]"
+          />
+          {item.name}
+        </td>
+
+        <td className="p-3 text-white">{item.qty}</td>
+        <td className="p-3 text-white">${item.price.toFixed(2)}</td>
+        <td className="p-3 font-semibold text-white">
+          ${(item.qty * item.price).toFixed(2)}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
         </table>
 
         {order.items?.length === 0 && (

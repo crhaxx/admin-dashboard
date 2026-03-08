@@ -10,23 +10,48 @@ import {
   UserPlus,
   LayoutDashboard,
 } from "lucide-react";
+import { useOrders } from "../providers/OrdersProvider";
+import { useUsers } from "../providers/UsersProvider";
 
 export default function DashboardPage() {
+  const { products } = useProducts();
+const { orders } = useOrders();
+const { users } = useUsers();
+
   useEffect(() => {
+  if (!orders.length) return;
+
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const revenueByDay = [0, 0, 0, 0, 0, 0, 0];
+  const ordersByDay = [0, 0, 0, 0, 0, 0, 0];
+
+  orders.forEach(order => {
+    if (!order.createdAt?.seconds) return;
+
+    const date = new Date(order.createdAt.seconds * 1000);
+    const dayIndex = date.getDay();
+    const correctedIndex = dayIndex === 0 ? 6 : dayIndex - 1;
+
+    ordersByDay[correctedIndex]++;
+
+    if (["paid", "shipped", "delivered"].includes(order.status)) {
+      revenueByDay[correctedIndex] += order.total;
+    }
+  });
+
   const script = document.createElement("script");
   script.src = "https://cdn.jsdelivr.net/npm/chart.js";
   script.onload = () => {
     const Chart = (window as any).Chart;
 
-    // Revenue Chart
     new Chart(document.getElementById("revenueChart"), {
       type: "line",
       data: {
-        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        labels: days,
         datasets: [
           {
             label: "Revenue",
-            data: [400, 520, 610, 700, 650, 800, 900],
+            data: revenueByDay,
             borderColor: "#4f46e5",
             tension: 0.4,
           },
@@ -34,15 +59,14 @@ export default function DashboardPage() {
       },
     });
 
-    // Orders Chart
     new Chart(document.getElementById("ordersChart"), {
       type: "bar",
       data: {
-        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        labels: days,
         datasets: [
           {
             label: "Orders",
-            data: [12, 19, 7, 15, 22, 30, 25],
+            data: ordersByDay,
             backgroundColor: "#10b981",
           },
         ],
@@ -51,18 +75,24 @@ export default function DashboardPage() {
   };
 
   document.body.appendChild(script);
-}, []);
+}, [orders]);
 
 const [openActions, setOpenActions] = useState(false);
 const navigate = useNavigate();
 
-const { products } = useProducts();
+
+
+const revenueStatuses = ["paid", "shipped", "delivered"];
+
+const totalRevenue = orders
+  .filter(o => revenueStatuses.includes(o.status))
+  .reduce((sum, o) => sum + o.total, 0);
 
 
   return (
 
     
-    <div className="min-h-screen bg-gray-100 dark:bg-black p-6 space-y-10">
+    <div className="min-h-screen bg-gray-100 dark:bg-[#0d0d0d] p-6 space-y-10">
 
   {/* Quick Actions */}
   <div className="flex justify-end">
@@ -117,7 +147,7 @@ const { products } = useProducts();
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Orders</p>
-              <h2 className="text-2xl font-bold mt-1">169</h2>
+              <h2 className="text-2xl font-bold mt-1">{orders.length}</h2>
             </div>
             <div className="bg-blue-100 p-3 rounded-full">
               <ShoppingCart className="text-blue-600" size={26} />
@@ -130,7 +160,7 @@ const { products } = useProducts();
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Revenue</p>
-              <h2 className="text-2xl font-bold mt-1">$4,896</h2>
+              <h2 className="text-2xl font-bold mt-1">${totalRevenue.toFixed(2)}</h2>
             </div>
             <div className="bg-green-100 p-3 rounded-full">
               <DollarSign className="text-green-600" size={26} />
@@ -143,7 +173,7 @@ const { products } = useProducts();
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Users</p>
-              <h2 className="text-2xl font-bold mt-1">67</h2>
+              <h2 className="text-2xl font-bold mt-1">{users.length}</h2>
             </div>
             <div className="bg-purple-100 p-3 rounded-full">
               <Users className="text-purple-600" size={26} />

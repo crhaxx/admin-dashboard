@@ -8,7 +8,20 @@ import {
   signOut,
 } from "firebase/auth";
 
-import { setDoc, doc, getDoc } from "firebase/firestore";
+import { setDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
+
+type UserProfile = {
+  uid: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  photoURL?: string;
+  createdAt?: number;
+};
+
+type AuthProviderProps = {
+  children: ReactNode;
+};
 
 type AuthContextValue = {
   user: any;
@@ -25,18 +38,7 @@ type AuthContextValue = {
   updateUserProfile: (data: Partial<UserProfile>) => void;
 };
 
-type UserProfile = {
-  uid: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  photoURL?: string;
-  createdAt?: number;
-};
 
-type AuthProviderProps = {
-  children: ReactNode;
-};
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
@@ -94,7 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         firstName,
         lastName,
         email,
-        createdAt: Date.now(),
+        createdAt: serverTimestamp(),
       });
 
       return true;

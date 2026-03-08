@@ -1,17 +1,25 @@
 import { useOrders } from "../../providers/OrdersProvider";
 import { format } from "date-fns";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import toast from "react-hot-toast";
 
 import { db } from "../../firebase";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../providers/AuthProvider";
 
 
-const addTestOrder = async () => {
+
+export default function OrdersPage() {
+  const navigate = useNavigate();
+  const { orders, loading } = useOrders();
+  const { user } = useAuth();
+
+  const addTestOrder = async () => {
   try {
     await addDoc(collection(db, "orders"), {
-      customerName: "Test User",
+      customerName: user.firstName + " " + user.lastName,
+      userId: user.uid,
       total: 49.99,
       status: "pending",
       createdAt: serverTimestamp(),
@@ -21,9 +29,18 @@ const addTestOrder = async () => {
           name: "Test Product",
           qty: 1,
           price: 49.99,
+          images: ["https://www.zsdacice.net/evt_image.php?img=5535"],
         },
       ],
     });
+
+     await addDoc(collection(db, "activity"), {
+        userName: user.firstName + " " + user.lastName,
+        userId: user.uid,
+        action: "Created new order",
+        timestamp: Date.now(),
+      });
+
 
     toast.success("Test order created");
   } catch (err) {
@@ -32,11 +49,6 @@ const addTestOrder = async () => {
   }
 };
 
-
-
-export default function OrdersPage() {
-  const navigate = useNavigate();
-  const { orders, loading } = useOrders();
 
   if (loading) {
     return (

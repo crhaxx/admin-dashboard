@@ -1,9 +1,12 @@
-import { useUsers } from "../providers/UsersProvider";
+import { useUsers } from "../../providers/UsersProvider";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 export default function UsersPage() {
   const { users, loading } = useUsers();
+
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -21,21 +24,35 @@ export default function UsersPage() {
         <table className="w-full text-left">
           <thead className="bg-gray-50 dark:bg-[#111] text-gray-600 dark:text-gray-300 text-sm">
             <tr>
-              <th className="p-4">Name</th>
-              <th className="p-4">Email</th>
+              <th className="p-4">User</th>
               <th className="p-4">Role</th>
               <th className="p-4">Created</th>
             </tr>
           </thead>
 
           <tbody>
-            {users.map((user: any) => (
+            {users.map((user:any) => (
               <tr
-                key={user.id}
-                className="border-t border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#222] transition"
-              >
-                <td className="p-4 font-medium text-white">{user.name}</td>
-                <td className="p-4 text-white">{user.email}</td>
+  key={user.id}
+  onClick={() => navigate(`/user/${user.id}`)}
+  className="cursor-pointer border-t border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#222] transition"
+>
+                <td className="p-4 flex items-center gap-3">
+                  <img
+                    src={
+                      user.avatar ||
+                      `https://ui-avatars.com/api/?name=${user.firstName}&background=6366f1&color=fff`
+                    }
+                    alt={user.name}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+
+                  <div className="flex flex-col">
+                    <span className="font-medium text-white">{user.firstName} {user.lastName}</span>
+                    <span className="text-xs text-gray-400">{user.email}</span>
+                  </div>
+                </td>
+
                 <td className="p-4 text-white">{user.role || "user"}</td>
 
                 <td className="p-4 text-gray-400">

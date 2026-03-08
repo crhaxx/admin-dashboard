@@ -4,8 +4,20 @@ import { db } from "../firebase";
 
 const UsersContext = createContext<any>(null);
 
+export type User = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  createdAt?: any;
+  lastLogin?: any;
+  deleted?: boolean;
+  disabled?: boolean;
+};
+
 export const UsersProvider = ({ children }: any) => {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -13,11 +25,13 @@ export const UsersProvider = ({ children }: any) => {
 
     const unsub = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map((doc) => ({
+        ...(doc.data() as User),
         id: doc.id,
-        ...doc.data(),
       }));
 
-      setUsers(data);
+      const filtered = data.filter((u) => !u.deleted);
+
+      setUsers(filtered);
       setLoading(false);
     });
 

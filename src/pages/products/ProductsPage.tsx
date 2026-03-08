@@ -9,8 +9,10 @@ import {
   addDoc,
   deleteDoc,
   updateDoc,
+  getDoc,
 } from "firebase/firestore";
 import toast from "react-hot-toast";
+import { useAuth } from "../../providers/AuthProvider";
 
 type CategoryDoc = {
   id: string;
@@ -41,6 +43,8 @@ export default function ProductsPage() {
   const [showAddCategoryDropdown, setShowAddCategoryDropdown] = useState(false);
   const [showEditCategoryDropdown, setShowEditCategoryDropdown] = useState(false);
   const [quickCategory, setQuickCategory] = useState("");
+
+  const { user } = useAuth();
 
   const [confirmDelete, setConfirmDelete] = useState<{
     open: boolean;
@@ -121,9 +125,28 @@ export default function ProductsPage() {
     }
   }, [addModal, confirmDelete.open, editModal, categoryModal]);
 
+  async function getProductName(productId: string) {
+  const ref = doc(db, "products", productId);
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) return null;
+
+  return snap.data().name;
+}
+
+
   const deleteProduct = async () => {
     if (!confirmDelete.id) return;
+    const name = await getProductName(confirmDelete.id);
     await deleteDoc(doc(db, "products", confirmDelete.id));
+
+    await addDoc(collection(db, "activity"), {
+        userName: user.firstName + " " + user.lastName,
+        userId: user.uid,
+        action: "Deleted product " + name,
+        timestamp: Date.now(),
+    });
+
     setConfirmDelete({ open: false, id: null });
   };
 
@@ -157,6 +180,13 @@ export default function ProductsPage() {
       images: [editProduct.imageUrl],
       categories: editProduct.categories,
       updatedAt: Timestamp.now(),
+    });
+
+    await addDoc(collection(db, "activity"), {
+        userName: user.firstName + " " + user.lastName,
+        userId: user.uid,
+        action: "Updated product " + editProduct.name,
+        timestamp: Date.now(),
     });
 
     setEditModal(false);
@@ -312,7 +342,7 @@ export default function ProductsPage() {
                       }}
                       className="p-2 bg-gray-200 dark:bg-[#222] rounded-lg hover:bg-gray-300 dark:hover:bg-[#333] transition"
                     >
-                      <Pencil size={16} />
+                      <Pencil size={16} color="#ffffff" />
                     </button>
 
                     <button
