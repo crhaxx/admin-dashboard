@@ -4,11 +4,13 @@ import { AuthProvider } from "./providers/AuthProvider";
 import { Toaster } from "react-hot-toast";
 import { ProductsProvider } from "./providers/ProductsProvider";
 import { OrdersProvider } from "./providers/OrdersProvider";
+import { UsersProvider } from "./providers/UsersProvider";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
       <AuthProvider>
-      <ProductsProvider>
+      <UsersProvider>
+        <ProductsProvider>
         <OrdersProvider>
           <Toaster
           position="top-right"
@@ -23,6 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <AppRoutes />
         </OrdersProvider>
       </ProductsProvider>
+      </UsersProvider>
     </AuthProvider>
 
 )
