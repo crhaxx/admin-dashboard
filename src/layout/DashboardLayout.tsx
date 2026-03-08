@@ -11,7 +11,6 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
-import { useTheme } from "../hooks/useTheme";
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth();
@@ -19,8 +18,6 @@ export default function DashboardLayout() {
 
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-
-  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     await logout();
@@ -38,7 +35,7 @@ export default function DashboardLayout() {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-[#f5f6fa] dark:bg-[#0a0a0a] transition-colors duration-300">
+    <div className="flex min-h-screen transition-colors duration-300">
 
       {/* Sidebar */}
       <aside
@@ -49,7 +46,6 @@ export default function DashboardLayout() {
     flex flex-col p-6
   "
 >
-
 
   {/* Logo */}
   <div className="flex flex-col items-center mb-4">
@@ -119,21 +115,6 @@ export default function DashboardLayout() {
   </div>
 
   <div className="flex-1"></div>
-
-  {/* Theme Switcher */}
-  <div className="flex items-center justify-between bg-gray-100 dark:bg-[#111] px-3 py-2 rounded-lg mb-3">
-  <span className="text-sm text-gray-600 dark:text-gray-300">Theme</span>
-
-  <button
-    onClick={toggleTheme}
-    className="bg-gray-200 dark:bg-[#222] px-3 py-1 rounded text-sm hover:bg-gray-300 dark:hover:bg-[#333] transition flex items-center justify-center"
-  >
-    <div className="relative w-5 h-5">
-      <Sun className={`absolute w-5 h-5 transition-all ${theme === "dark" ? "opacity-0 scale-0" : "opacity-100 scale-100"}`} />
-      <Moon className={`absolute w-5 h-5 transition-all ${theme === "dark" ? "opacity-100 scale-100" : "opacity-0 scale-0"}`} />
-    </div>
-  </button>
-</div>
 
   {/* Footer */}
   <div className="text-center text-xs text-gray-400 mt-2">

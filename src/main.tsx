@@ -5,10 +5,8 @@ import { Toaster } from "react-hot-toast";
 import { ProductsProvider } from "./providers/ProductsProvider";
 import "./index.css";
 
-console.log("APP RENDER");
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <AuthProvider>
+      <AuthProvider>
       <ProductsProvider>
         <Toaster
           position="top-right"

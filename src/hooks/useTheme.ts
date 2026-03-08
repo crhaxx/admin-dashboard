@@ -1,23 +1,25 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 
-export function useTheme() {
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") || "light"
-  );
+// export function useTheme() {
+//   const [theme, setTheme] = useState(
+//     localStorage.getItem("theme") || "light"
+//   );
 
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+//   useEffect(() => {
+//     const html = document.documentElement;
 
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+//     if (theme === "dark") {
+//       html.classList.add("dark");
+//     } else {
+//       html.classList.remove("dark");
+//     }
 
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
+//     localStorage.setItem("theme", theme);
+//   }, [theme]);
 
-  return { theme, toggleTheme };
-}
+//   const toggleTheme = () => {
+//     setTheme(theme === "dark" ? "light" : "dark");
+//   };
+
+//   return { theme, toggleTheme };
+// }
