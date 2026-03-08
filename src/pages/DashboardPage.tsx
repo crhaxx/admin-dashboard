@@ -60,37 +60,39 @@ const { products } = useProducts();
 
 
   return (
+
+    
     <div className="min-h-screen bg-gray-100 dark:bg-black p-6 space-y-10">
 
-      {/* Quick Actions */}
-      <div className="flex justify-end">
-        <div className="relative">
-          <button
-            onClick={() => setOpenActions((prev) => !prev)}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-[#fffff] dark:hover:bg-[#CCCCCC] rounded-lg transition"
-          >
-            <Plus size={18} />
-            <span>Create</span>
-          </button>
+  {/* Quick Actions */}
+  <div className="flex justify-end">
+    <div className="relative">
+      <button
+        onClick={() => setOpenActions((prev) => !prev)}
+        className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-[#fffffff] dark:hover:bg-[#cccccc] rounded-lg transition"
+      >
+        <Plus size={18} />
+        <span>Create</span>
+      </button>
 
-          {openActions && (
-            <div className="absolute right-0 mt-2 bg-white dark:bg-[#fffff] border border-gray-200 dark:border-[#333] rounded-lg shadow-lg w-44 z-20">
-              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#CCCCCC] flex items-center gap-2">
-                <Plus size={16} /> Add Product
-              </button>
-              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#CCCCCC] flex items-center gap-2">
-                <ShoppingCart size={16} /> Create Order
-              </button>
-              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#CCCCCC] flex items-center gap-2">
-                <UserPlus size={16} /> Invite User
-              </button>
-              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#CCCCCC] flex items-center gap-2">
-                <Package size={16} /> Add Inventory
-              </button>
-            </div>
-          )}
+      {openActions && (
+        <div className="absolute right-0 mt-2 bg-white dark:bg-[#ffffff] border border-gray-200 dark:border-[#333] rounded-lg shadow-lg w-44 z-20">
+          <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#cccccc] flex items-center gap-2">
+            <Plus size={16} /> Add Product
+          </button>
+          <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#cccccc] flex items-center gap-2">
+            <ShoppingCart size={16} /> Create Order
+          </button>
+          <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#cccccc] flex items-center gap-2">
+            <UserPlus size={16} /> Invite User
+          </button>
+          <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#cccccc] flex items-center gap-2">
+            <Package size={16} /> Add Inventory
+          </button>
         </div>
-        </div>
+      )}
+    </div>
+</div>
 
 
       {/* Dashboard Filters */}
