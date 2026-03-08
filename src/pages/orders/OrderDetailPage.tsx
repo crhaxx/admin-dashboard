@@ -1,59 +1,129 @@
 import { useParams } from "react-router-dom";
-import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Clock, CheckCircle, Truck, PackageCheck } from "lucide-react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
+/* ---------------------------------------------------
+   TIMELINE COMPONENT
+--------------------------------------------------- */
+const Timeline = ({ order }: { order: any }) => {
+  const steps = [
+    { key: "created", label: "Created", icon: <Clock size={18} /> },
+    { key: "pending", label: "Pending", icon: <Loader2 size={18} /> },
+    { key: "paid", label: "Paid", icon: <CheckCircle size={18} /> },
+    { key: "shipped", label: "Shipped", icon: <Truck size={18} /> },
+    { key: "delivered", label: "Delivered", icon: <PackageCheck size={18} /> },
+  ];
+
+  const statusOrder = ["created", "pending", "paid", "shipped", "delivered"];
+  const currentIndex = statusOrder.indexOf(order.status);
+
+  const getDate = (key: string) => {
+    const field = key + "At";
+    if (!order[field]?.seconds) return null;
+    return format(order[field].toDate(), "dd.MM.yyyy HH:mm");
+  };
+
+  return (
+    <div className="flex items-center justify-between mt-8 mb-8">
+      {steps.map((step, index) => {
+        const isActive = index <= currentIndex;
+        const date = getDate(step.key);
+
+        return (
+          <div key={step.key} className="flex flex-col items-center flex-1">
+            <div
+              className={`
+                w-10 h-10 rounded-full flex items-center justify-center
+                ${isActive ? "bg-indigo-600 text-white" : "bg-gray-300 dark:bg-[#333] text-gray-600"}
+              `}
+            >
+              {step.icon}
+            </div>
+
+            <p
+              className={`mt-2 text-sm font-medium ${
+                isActive ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500"
+              }`}
+            >
+              {step.label}
+            </p>
+
+            {date && (
+              <p className="text-xs text-gray-500 mt-1">
+                {date}
+              </p>
+            )}
+
+            {index < steps.length - 1 && (
+              <div
+                className={`
+                  h-1 w-full mt-3
+                  ${isActive ? "bg-indigo-600" : "bg-gray-300 dark:bg-[#333]"}
+                `}
+              ></div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+/* ---------------------------------------------------
+   MAIN PAGE
+--------------------------------------------------- */
 export default function OrderDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  /* ---------------- PDF EXPORT ---------------- */
   const exportPDF = () => {
-  const doc = new jsPDF();
+    const doc = new jsPDF();
 
-  doc.setFontSize(18);
-  doc.text(`Order #${order.id}`, 14, 20);
+    doc.setFontSize(18);
+    doc.text(`Order #${order.id}`, 14, 20);
 
-  doc.setFontSize(12);
-  doc.text(`Customer: ${order.customerName}`, 14, 30);
-  doc.text(`Status: ${order.status}`, 14, 38);
-  doc.text(
-    `Created: ${
-      order.createdAt?.seconds
-        ? format(order.createdAt.toDate(), "dd.MM.yyyy HH:mm")
-        : "—"
-    }`,
-    14,
-    46
-  );
+    doc.setFontSize(12);
+    doc.text(`Customer: ${order.customerName}`, 14, 30);
+    doc.text(`Status: ${order.status}`, 14, 38);
+    doc.text(
+      `Created: ${
+        order.createdAt?.seconds
+          ? format(order.createdAt.toDate(), "dd.MM.yyyy HH:mm")
+          : "—"
+      }`,
+      14,
+      46
+    );
 
-  // Shipping info
-  doc.text(`Tracking Number: ${order.trackingNumber || "-"}`, 14, 58);
-  doc.text(`Carrier: ${order.shippingCarrier || "-"}`, 14, 66);
-  doc.text(`Note: ${order.shippingNote || "-"}`, 14, 74);
+    doc.text(`Tracking Number: ${order.trackingNumber || "-"}`, 14, 58);
+    doc.text(`Carrier: ${order.shippingCarrier || "-"}`, 14, 66);
+    doc.text(`Note: ${order.shippingNote || "-"}`, 14, 74);
 
-  // Items table
-  autoTable(doc, {
-    startY: 90,
-    head: [["Product", "Qty", "Price", "Subtotal"]],
-    body: order.items.map((item: any) => [
-      item.name,
-      item.qty,
-      `$${item.price.toFixed(2)}`,
-      `$${(item.qty * item.price).toFixed(2)}`,
-    ]),
-  });
+    autoTable(doc, {
+      startY: 90,
+      head: [["Product", "Qty", "Price", "Subtotal"]],
+      body: order.items.map((item: any) => [
+        item.name,
+        item.qty,
+        `$${item.price.toFixed(2)}`,
+        `$${(item.qty * item.price).toFixed(2)}`,
+      ]),
+    });
 
-  doc.save(`order_${order.id}.pdf`);
-};
+    doc.save(`order_${order.id}.pdf`);
+  };
 
+  /* ---------------- FETCH ORDER ---------------- */
   useEffect(() => {
     async function fetchOrder() {
       const ref = doc(db, "orders", id!);
@@ -85,97 +155,108 @@ export default function OrderDetailPage() {
     );
   }
 
+  /* ---------------- TRACKING URL ---------------- */
   const getTrackingUrl = () => {
-  if (!order.trackingNumber || !order.shippingCarrier) return null;
+    if (!order.trackingNumber || !order.shippingCarrier) return null;
 
-  const carrier = order.shippingCarrier.toLowerCase();
-  const tn = order.trackingNumber;
+    const carrier = order.shippingCarrier.toLowerCase();
+    const tn = order.trackingNumber;
 
-  if (carrier.includes("ppl"))
-    return `https://www.ppl.cz/vyhledat-zasilku?shipmentId=${tn}`;
+    if (carrier.includes("ppl"))
+      return `https://www.ppl.cz/vyhledat-zasilku?shipmentId=${tn}`;
 
-  if (carrier.includes("dpd"))
-    return `https://tracking.dpd.de/status/en_US/parcel/${tn}`;
+    if (carrier.includes("dpd"))
+      return `https://tracking.dpd.de/status/en_US/parcel/${tn}`;
 
-  if (carrier.includes("gls"))
-    return `https://gls-group.eu/CZ/cs/sledovani-zasilek?match=${tn}`;
+    if (carrier.includes("gls"))
+      return `https://gls-group.eu/CZ/cs/sledovani-zasilek?match=${tn}`;
 
-  if (carrier.includes("zasilkovna") || carrier.includes("packeta"))
-    return `https://tracking.packeta.com/cs/tracking/search?trackingNumber=${tn}`;
+    if (carrier.includes("zasilkovna") || carrier.includes("packeta"))
+      return `https://tracking.packeta.com/cs/tracking/search?trackingNumber=${tn}`;
 
-  if (carrier.includes("posta") || carrier.includes("ceska posta"))
-    return `https://www.postaonline.cz/trackandtrace/-/zasilka/cislo?parcelNumbers=${tn}`;
+    if (carrier.includes("posta") || carrier.includes("ceska posta"))
+      return `https://www.postaonline.cz/trackandtrace/-/zasilka/cislo?parcelNumbers=${tn}`;
 
-  return null;
-};
+    return null;
+  };
 
+  const trackingUrl = getTrackingUrl();
+
+  /* ---------------- UPDATE SHIPPING ---------------- */
   const updateShipping = async (field: string, value: string) => {
-  try {
-    await updateDoc(doc(db, "orders", order.id), {
-      [field]: value,
-    });
+    try {
+      await updateDoc(doc(db, "orders", order.id), {
+        [field]: value,
+      });
 
-    setOrder((prev: any) => ({ ...prev, [field]: value }));
-    toast.success("Shipping info updated");
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to update shipping info");
-  }
-};
+      setOrder((prev: any) => ({ ...prev, [field]: value }));
+      toast.success("Shipping info updated");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update shipping info");
+    }
+  };
 
+  /* ---------------- UPDATE STATUS + TIMESTAMPS ---------------- */
   const updateStatus = async (newStatus: string) => {
-  try {
-    await updateDoc(doc(db, "orders", order.id), {
-      status: newStatus,
-    });
+    try {
+      const updates: any = { status: newStatus };
 
-    setOrder((prev: any) => ({ ...prev, status: newStatus }));
-    toast.success("Status updated");
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to update status");
-  }
-};
+      if (newStatus === "paid") updates.paidAt = serverTimestamp();
+      if (newStatus === "shipped") updates.shippedAt = serverTimestamp();
+      if (newStatus === "delivered") updates.deliveredAt = serverTimestamp();
 
-const deleteOrder = async () => {
-  if (!confirm("Do you really want to delete this order?")) return;
+      await updateDoc(doc(db, "orders", order.id), updates);
 
-  try {
-    await deleteDoc(doc(db, "orders", order.id));
-    toast.success("Order deleted");
-    navigate("/orders");
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to delete order");
-  }
-};
+      setOrder((prev: any) => ({ ...prev, ...updates }));
+      toast.success("Status updated");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update status");
+    }
+  };
 
-const trackingUrl = getTrackingUrl();
+  /* ---------------- DELETE ORDER ---------------- */
+  const deleteOrder = async () => {
+    if (!confirm("Do you really want to delete this order?")) return;
 
+    try {
+      await deleteDoc(doc(db, "orders", order.id));
+      toast.success("Order deleted");
+      navigate("/orders");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete order");
+    }
+  };
+
+  /* ---------------------------------------------------
+     RENDER
+  --------------------------------------------------- */
   return (
     <div className="p-6">
-        <div className="flex items-center gap-3 mb-4">
-  <button
-    onClick={() => navigate("/orders")}
-    className="px-4 py-2 bg-gray-200 dark:bg-[#333] text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-[#444] transition"
-  >
-    ← Back to Orders
-  </button>
+      <div className="flex items-center gap-3 mb-4">
+        <button
+          onClick={() => navigate("/orders")}
+          className="px-4 py-2 bg-gray-200 dark:bg-[#333] text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-[#444] transition"
+        >
+          ← Back to Orders
+        </button>
 
-  <button
-    onClick={deleteOrder}
-    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-  >
-    Delete Order
-  </button>
+        <button
+          onClick={deleteOrder}
+          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+        >
+          Delete Order
+        </button>
 
-  <button
-  onClick={exportPDF}
-  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
->
-  Export PDF
-</button>
-</div>
+        <button
+          onClick={exportPDF}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+        >
+          Export PDF
+        </button>
+      </div>
 
       <h1 className="text-2xl font-semibold mb-4 text-white">Order #{order.id}</h1>
 
@@ -195,23 +276,24 @@ const trackingUrl = getTrackingUrl();
           </div>
 
           <div>
-  <p className="text-gray-500">Status</p>
+            <p className="text-gray-500">Status</p>
 
-  <select
-    value={order.status}
-    onChange={(e) => updateStatus(e.target.value)}
-    className="
-      mt-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-[#444]
-      bg-white text-sm
-      focus:outline-none focus:ring-2 focus:ring-indigo-500
-      transition
-    "
-  >
-    <option value="pending">Pending</option>
-    <option value="paid">Paid</option>
-    <option value="shipped">Shipped</option>
-  </select>
-</div>
+            <select
+              value={order.status}
+              onChange={(e) => updateStatus(e.target.value)}
+              className="
+                mt-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-[#444]
+                bg-white text-sm
+                focus:outline-none focus:ring-2 focus:ring-indigo-500
+                transition
+              "
+            >
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+            </select>
+          </div>
 
           <div>
             <p className="text-gray-500">Created</p>
@@ -223,59 +305,58 @@ const trackingUrl = getTrackingUrl();
           </div>
         </div>
 
+        {/* TIMELINE */}
+        <Timeline order={order} />
+
+        {/* Shipping Info */}
         <div className="bg-white dark:bg-[#1a1a1a] rounded-xl shadow border border-gray-200 dark:border-[#333] p-6 mt-6">
-  <h2 className="text-lg font-semibold mb-4 text-white">Shipping Info</h2>
+          <h2 className="text-lg font-semibold mb-4 text-white">Shipping Info</h2>
 
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-gray-500">Tracking Number</p>
+              <input
+                type="text"
+                defaultValue={order.trackingNumber || ""}
+                onBlur={(e) => updateShipping("trackingNumber", e.target.value)}
+                placeholder="Enter tracking number"
+                className="mt-1 w-full px-3 py-2 text-white rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
 
-    {/* Tracking Number */}
-    <div>
-      <p className="text-gray-500">Tracking Number</p>
-      <input
-        type="text"
-        defaultValue={order.trackingNumber || ""}
-        onBlur={(e) => updateShipping("trackingNumber", e.target.value)}
-        placeholder="Enter tracking number"
-        className="mt-1 w-full px-3 py-2 text-white rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] focus:ring-2 focus:ring-indigo-500"
-      />
-    </div>
+            <div>
+              <p className="text-gray-500">Carrier</p>
+              <input
+                type="text"
+                defaultValue={order.shippingCarrier || ""}
+                onBlur={(e) => updateShipping("shippingCarrier", e.target.value)}
+                placeholder="e.g. PPL, DPD, GLS"
+                className="mt-1 w-full px-3 py-2 text-white rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
 
-    {/* Shipping Carrier */}
-    <div>
-      <p className="text-gray-500">Carrier</p>
-      <input
-        type="text"
-        defaultValue={order.shippingCarrier || ""}
-        onBlur={(e) => updateShipping("shippingCarrier", e.target.value)}
-        placeholder="e.g. PPL, DPD, GLS"
-        className="mt-1 w-full px-3 py-2 text-white rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] focus:ring-2 focus:ring-indigo-500"
-      />
-    </div>
+            <div className="sm:col-span-2">
+              <p className="text-gray-500">Shipping Note</p>
+              <textarea
+                defaultValue={order.shippingNote || ""}
+                onBlur={(e) => updateShipping("shippingNote", e.target.value)}
+                placeholder="Optional note for courier"
+                className="mt-1 w-full px-3 py-2 text-white rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
 
-    {/* Shipping Note */}
-    <div className="sm:col-span-2">
-      <p className="text-gray-500">Shipping Note</p>
-      <textarea
-        defaultValue={order.shippingNote || ""}
-        onBlur={(e) => updateShipping("shippingNote", e.target.value)}
-        placeholder="Optional note for courier"
-        className="mt-1 w-full px-3 py-2 text-white rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] focus:ring-2 focus:ring-indigo-500"
-      />
-    </div>
-
-    {trackingUrl && (
-  <a
-    href={trackingUrl}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 underline text-sm"
-  >
-    Open Tracking Link →
-  </a>
-)}
-
-  </div>
-</div>
+            {trackingUrl && (
+              <a
+                href={trackingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 underline text-sm"
+              >
+                Open Tracking Link →
+              </a>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Items */}
