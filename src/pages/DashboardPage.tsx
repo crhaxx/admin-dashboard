@@ -511,7 +511,7 @@ insights.push({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Revenue</p>
-              <h2 className="text-2xl font-bold mt-1">${totalRevenue.toFixed(2)}</h2>
+              <h2 className="text-2xl font-bold mt-1">{totalRevenue.toFixed(0)} CZK</h2>
             </div>
             <div className="bg-green-100 p-3 rounded-full">
               <DollarSign className="text-green-600" size={26} />

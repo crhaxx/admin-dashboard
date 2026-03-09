@@ -138,7 +138,7 @@ const randomUser = {
               >
                 <td className="p-4 font-medium dark:text-white">{order.customerName}</td>
 
-                <td className="p-4 dark:text-white">${order.total.toFixed(2)}</td>
+                <td className="p-4 dark:text-white">{order.total.toFixed(2)} CZK</td>
 
                 <td className="p-4 dark:text-white">
                   <span

@@ -314,7 +314,7 @@ export default function OrderDetailPage() {
 
           <div>
             <p className="text-gray-500">Total</p>
-            <p className="font-medium text-white">${order.total.toFixed(2)}</p>
+            <p className="font-medium text-white">{order.total.toFixed(2)} CZK</p>
           </div>
 
           <div>
@@ -434,9 +434,9 @@ export default function OrderDetailPage() {
         </td>
 
         <td className="p-3 text-white">{item.qty}</td>
-        <td className="p-3 text-white">${item.price.toFixed(2)}</td>
+        <td className="p-3 text-white">{item.price.toFixed(2)} CZK</td>
         <td className="p-3 font-semibold text-white">
-          ${(item.qty * item.price).toFixed(2)}
+          {(item.qty * item.price).toFixed(2)} CZK
         </td>
       </tr>
     );

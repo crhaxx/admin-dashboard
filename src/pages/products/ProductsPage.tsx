@@ -302,7 +302,7 @@ export default function ProductsPage() {
                   </td>
 
                   <td className="p-4 text-black dark:text-white">
-                    ${product.price}
+                    {product.price} CZK
                   </td>
 
                   <td className="p-4 text-black dark:text-white">
@@ -532,7 +532,7 @@ export default function ProductsPage() {
 
               <input
                 type="number"
-                placeholder="Price"
+                placeholder="Price in CZK"
                 className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
                 value={newProduct.price}
                 onChange={(e) =>
@@ -719,7 +719,7 @@ export default function ProductsPage() {
 
               <input
                 type="number"
-                placeholder="Price"
+                placeholder="Price in CZK"
                 className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
                 value={editProduct.price}
                 onChange={(e) =>
