@@ -1,46 +1,96 @@
 import { useOrders } from "../../providers/OrdersProvider";
 import { format } from "date-fns";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { addDoc, collection, doc, getDoc, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
 
 import { db } from "../../firebase";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../providers/AuthProvider";
+import { useProducts } from "../../providers/ProductsProvider";
+import { useUsers } from "../../providers/UsersProvider";
 
 
 
 export default function OrdersPage() {
   const navigate = useNavigate();
   const { orders, loading } = useOrders();
-  const { user } = useAuth();
+  const { products } = useProducts();
+  const { users } = useUsers();
 
   const addTestOrder = async () => {
   try {
-    await addDoc(collection(db, "orders"), {
-      customerName: user.firstName + " " + user.lastName,
-      userId: user.uid,
-      total: 49.99,
-      status: "pending",
-      createdAt: serverTimestamp(),
-      items: [
-        {
-          productId: "test123",
-          name: "Test Product",
-          qty: 1,
-          price: 49.99,
-          images: ["https://www.zsdacice.net/evt_image.php?img=5535"],
-        },
-      ],
+    const availableProducts = products.filter((p: any) => p.stock > 0);
+
+    if (availableProducts.length === 0) {
+      toast.error("No products with stock available");
+      return;
+    }
+
+    if (!Array.isArray(users) || users.length === 0) {
+  toast.error("No users available");
+  return;
+}
+
+if (!Array.isArray(products) || products.length === 0) {
+  toast.error("No products available");
+  return;
+}
+
+    const randomUserDoc = users[Math.floor(Math.random() * users.length)];
+const randomUser = {
+  ...randomUserDoc,
+  uid: randomUserDoc.id,
+};
+
+
+    const itemCount = Math.min(
+      Math.floor(Math.random() * 3) + 1,
+      7
+    );
+
+    const shuffled = [...availableProducts].sort(() => Math.random() - 0.5);
+    const selectedProducts = shuffled.slice(0, itemCount);
+
+    const items = selectedProducts.map((product: any) => {
+      const qty = Math.floor(Math.random() * product.stock) + 1;
+
+      return {
+        productId: product.id,
+        name: product.name,
+        qty,
+        price: product.price,
+        images: product.images || [],
+      };
     });
 
-     await addDoc(collection(db, "activity"), {
-        userName: user.firstName + " " + user.lastName,
-        userId: user.uid,
-        action: "Created new order",
-        timestamp: Date.now(),
-      });
+    const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
 
+    await addDoc(collection(db, "orders"), {
+      customerName: randomUser.firstName + " " + randomUser.lastName,
+      userId: randomUser.uid,
+      total,
+      status: "pending",
+      createdAt: serverTimestamp(),
+      items,
+    });
+
+    for (const item of items) {
+      const product = products.find((p: any) => p.id === item.productId);
+      if (!product) continue;
+
+      const productRef = doc(db, "products", product.id);
+      await updateDoc(productRef, {
+        stock: product.stock - item.qty,
+        updatedAt: serverTimestamp(),
+      });
+    }
+
+    await addDoc(collection(db, "activity"), {
+      userName: randomUser.firstName + " " + randomUser.lastName,
+      userId: randomUser.uid,
+      action: `Created test order with ${items.length} items`,
+      timestamp: Date.now(),
+    });
 
     toast.success("Test order created");
   } catch (err) {
@@ -48,7 +98,6 @@ export default function OrdersPage() {
     toast.error("Failed to create order");
   }
 };
-
 
   if (loading) {
     return (

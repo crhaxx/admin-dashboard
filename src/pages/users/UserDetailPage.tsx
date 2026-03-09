@@ -1,19 +1,19 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { doc, getDoc, collection, query, where, getDocs, deleteDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs, deleteDoc, updateDoc, addDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 import { getAuth } from "firebase/auth";
-import { getFunctions, httpsCallable } from "firebase/functions";
-
+import { useAuth } from "../../providers/AuthProvider";
 
 export default function UserDetailPage() {
   const { id } = useParams();
+  const {user} = useAuth();
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<any>(null);
+  const [displayedUser, setDisplayedUser] = useState<any>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [activity, setActivity] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ export default function UserDetailPage() {
       const snap = await getDoc(ref);
 
       if (snap.exists()) {
-        setUser({ id: snap.id, ...snap.data() });
+        setDisplayedUser({ id: snap.id, ...snap.data() });
       }
 
       // ORDERS
@@ -67,7 +67,7 @@ export default function UserDetailPage() {
     );
   }
 
-  if (!user) {
+  if (!displayedUser) {
     return (
       <div className="p-6 text-center text-gray-500">
         User not found
@@ -76,9 +76,9 @@ export default function UserDetailPage() {
   }
 
   const avatarUrl =
-    user.avatar ||
+    displayedUser.avatar ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(
-      user.firstName + " " + user.lastName
+      displayedUser.firstName + " " + displayedUser.lastName
     )}&background=6366f1&color=fff`;
 
   const deleteUser = async () => {
@@ -99,7 +99,15 @@ export default function UserDetailPage() {
       deletedAt: Date.now(),
     });
 
-    toast.success("User soft-deleted");
+    toast.success("User Deleted");
+
+    await addDoc(collection(db, "activity"), {
+            userName: user.firstName + " " + user.lastName,
+            userId: user.uid,
+            action: "Deleted user " + displayedUser.firstName + " " + displayedUser.lastName,
+            timestamp: Date.now(),
+        });
+
     navigate("/users");
   } catch (err) {
     console.error(err);
@@ -111,7 +119,7 @@ export default function UserDetailPage() {
   try {
     await updateDoc(doc(db, "users", id!), { role: newRole });
 
-    setUser((prev: any) => ({ ...prev, role: newRole }));
+    setDisplayedUser((prev: any) => ({ ...prev, role: newRole }));
     toast.success("Role updated");
   } catch (err) {
     console.error(err);
@@ -133,19 +141,19 @@ export default function UserDetailPage() {
         <div className="flex items-center gap-6">
           <img
             src={avatarUrl}
-            alt={user.firstName}
+            alt={displayedUser.firstName}
             className="w-24 h-24 rounded-full object-cover ring-2 ring-indigo-500/40"
           />
 
           <div>
             <h1 className="text-2xl font-semibold text-white">
-              {user.firstName} {user.lastName}
+              {displayedUser.firstName} {displayedUser.lastName}
             </h1>
-            <p className="text-gray-400">{user.email}</p>
+            <p className="text-gray-400">{displayedUser.email}</p>
 
             {/* ROLE BADGE */}
             <select
-  value={user.role}
+  value={displayedUser.role}
   onChange={(e) => updateRole(e.target.value)}
   className="
     mt-2 px-3 py-1 rounded-lg text-sm font-medium
@@ -169,8 +177,8 @@ export default function UserDetailPage() {
           <div className="p-4 bg-[#111] rounded-xl border border-[#333]">
             <p className="text-gray-500 text-sm">Last Login</p>
             <p className="text-white">
-              {user.lastLogin
-                ? format(new Date(user.lastLogin), "dd.MM.yyyy HH:mm")
+              {displayedUser.lastLogin
+                ? format(new Date(displayedUser.lastLogin), "dd.MM.yyyy HH:mm")
                 : "—"}
             </p>
           </div>
@@ -178,8 +186,8 @@ export default function UserDetailPage() {
           <div className="p-4 bg-[#111] rounded-xl border border-[#333]">
             <p className="text-gray-500 text-sm">Member Since</p>
             <p className="text-white">
-              {user.createdAt?.seconds
-                ? format(user.createdAt.toDate(), "dd.MM.yyyy")
+              {displayedUser.createdAt?.seconds
+                ? format(displayedUser.createdAt.toDate(), "dd.MM.yyyy")
                 : "—"}
             </p>
           </div>
