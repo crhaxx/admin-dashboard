@@ -202,180 +202,250 @@ export default function ProductsPage() {
       (p.categories || []).includes(categoryFilter);
     return matchesSearch && matchesCategory;
   });
-
   return (
-    <>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-semibold text-black">
-            Products
-          </h1>
+    <div className="p-4 md:p-6 space-y-6">
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setCategoryModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-black rounded-lg transition"
-            >
-              <Folder size={18} />
-              Categories
-            </button>
+      {/* HEADER */}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <h1 className="text-2xl md:text-3xl font-semibold text-black">
+          Products
+        </h1>
 
-            <button
-              onClick={() => setAddModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition"
-            >
-              <Plus size={18} />
-              Add Product
-            </button>
-          </div>
-        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setCategoryModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-black rounded-lg transition"
+          >
+            <Folder size={18} />
+            Categories
+          </button>
 
-        {/* Search */}
-        <div className="flex items-center gap-2 bg-white border border-gray-300 px-3 py-2 rounded-lg w-full max-w-md">
-          <Search size={18} className="text-gray-500" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="bg-transparent outline-none text-black w-full"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-
-        {/* Category filter */}
-        <select
-          className="p-2 rounded bg-white border border-gray-300 text-black"
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-        >
-          <option value="">All categories</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.name}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-
-        {/* Products Table */}
-        <div className="bg-white rounded-xl shadow border border-gray-200">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="border-b border-gray-200">
-                <th className="p-4 text-black">Product</th>
-                <th className="p-4 text-black">Price</th>
-                <th className="p-4 text-black">Stock</th>
-                <th className="p-4 text-black">Categories</th>
-                <th className="p-4 text-right text-black">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {filtered.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="p-4 text-center text-gray-500"
-                  >No products found</td>
-                </tr>
-              )}
-
-              {filtered.map((product) => (
-                <tr
-                  key={product.id}
-                  onClick={() => {
-                        setEditProduct({
-                          id: product.id,
-                          name: product.name,
-                          price: String(product.price),
-                          stock: String(product.stock),
-                          imageUrl: product.images?.[0] || "",
-                          categories: product.categories || [],
-                        });
-                        setEditModal(true);
-                      }}
-                  className="border-b border-gray-100 hover:bg-gray-50 transition"
-                >
-                  <td className="p-4 flex items-center gap-3">
-                    <img
-                      src={
-                        product.images?.[0] ||
-                        "https://via.placeholder.com/60"
-                      }
-                      className="w-12 h-12 rounded-lg object-cover"
-                    />
-                    <span className="text-black">
-                      {product.name}
-                    </span>
-                  </td>
-
-                  {/* <td className="p-4 text-black">
-                    {product.price.toLocaleString('cs-CZ')} CZK
-                  </td> */}
-
-                  <PriceInCurrency priceForCurrency={product.price} component="td p4" />
-
-                  <td className="p-4 text-black">
-                    {product.stock}
-                  </td>
-
-                  <td className="p-4 text-black">
-                    <div className="flex gap-2 flex-wrap">
-                      {(product.categories || []).length === 0 && (
-                        <span className="text-gray-500">
-                          -
-                        </span>
-                      )}
-                      {(product.categories || []).map((cat) => (
-                        <span
-                          key={cat}
-                          className="px-2 py-1 bg-indigo-600 text-white rounded-full text-sm"
-                        >
-                          {cat}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-
-                  <td className="p-4 flex justify-end gap-3">
-                    <button
-                      onClick={() => {
-                        setEditProduct({
-                          id: product.id,
-                          name: product.name,
-                          price: String(product.price),
-                          stock: String(product.stock),
-                          imageUrl: product.images?.[0] || "",
-                          categories: product.categories || [],
-                        });
-                        setEditModal(true);
-                      }}
-                      className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
-                    >
-                      <Pencil size={16} color="#000000" />
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        setConfirmDelete({ open: true, id: product.id })
-                      }
-                      className="p-2 bg-red-200 rounded-lg hover:bg-red-300 transition"
-                    >
-                      <Trash2
-                        size={16}
-                        className="text-red-600"
-                      />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <button
+            onClick={() => setAddModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition"
+          >
+            <Plus size={18} />
+            Add Product
+          </button>
         </div>
       </div>
 
+      {/* SEARCH */}
+      <div className="flex items-center gap-2 bg-white border border-gray-300 px-3 py-2 rounded-lg w-full max-w-md">
+        <Search size={18} className="text-gray-500" />
+        <input
+          type="text"
+          placeholder="Search products..."
+          className="bg-transparent outline-none text-black w-full"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
+      {/* CATEGORY FILTER */}
+      <select
+        className="p-2 rounded bg-white border border-gray-300 text-black w-full max-w-xs"
+        value={categoryFilter}
+        onChange={(e) => setCategoryFilter(e.target.value)}
+      >
+        <option value="">All categories</option>
+        {categories.map((cat:any) => (
+          <option key={cat.id} value={cat.name}>
+            {cat.name}
+          </option>
+        ))}
+      </select>
+
+      {/* DESKTOP TABLE */}
+      <div className="hidden md:block bg-white rounded-xl shadow border border-gray-200">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="border-b border-gray-200">
+              <th className="p-4 text-black">Product</th>
+              <th className="p-4 text-black">Price</th>
+              <th className="p-4 text-black">Stock</th>
+              <th className="p-4 text-black">Categories</th>
+              <th className="p-4 text-right text-black">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={5} className="p-4 text-center text-gray-500">
+                  No products found
+                </td>
+              </tr>
+            )}
+
+            {filtered.map((product:any) => (
+              <tr
+                key={product.id}
+                onClick={() => {
+                  setEditProduct({
+                    id: product.id,
+                    name: product.name,
+                    price: String(product.price),
+                    stock: String(product.stock),
+                    imageUrl: product.images?.[0] || "",
+                    categories: product.categories || [],
+                  });
+                  setEditModal(true);
+                }}
+                className="border-b border-gray-100 hover:bg-gray-50 transition cursor-pointer"
+              >
+                <td className="p-4 flex items-center gap-3">
+                  <img
+                    src={product.images?.[0] || "https://via.placeholder.com/60"}
+                    className="w-12 h-12 rounded-lg object-cover"
+                  />
+                  <span className="text-black">{product.name}</span>
+                </td>
+
+                <PriceInCurrency priceForCurrency={product.price} component="td p4" />
+
+                <td className="p-4 text-black">{product.stock}</td>
+
+                <td className="p-4 text-black">
+                  <div className="flex gap-2 flex-wrap">
+                    {(product.categories || []).length === 0 && (
+                      <span className="text-gray-500">-</span>
+                    )}
+                    {(product.categories || []).map((cat:any) => (
+                      <span
+                        key={cat}
+                        className="px-2 py-1 bg-indigo-600 text-white rounded-full text-sm"
+                      >
+                        {cat}
+                      </span>
+                    ))}
+                  </div>
+                </td>
+
+                <td className="p-4 flex justify-end gap-3">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditProduct({
+                        id: product.id,
+                        name: product.name,
+                        price: String(product.price),
+                        stock: String(product.stock),
+                        imageUrl: product.images?.[0] || "",
+                        categories: product.categories || [],
+                      });
+                      setEditModal(true);
+                    }}
+                    className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                  >
+                    <Pencil size={16} color="#000000" />
+                  </button>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setConfirmDelete({ open: true, id: product.id });
+                    }}
+                    className="p-2 bg-red-200 rounded-lg hover:bg-red-300 transition"
+                  >
+                    <Trash2 size={16} className="text-red-600" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* MOBILE CARDS */}
+      <div className="md:hidden flex flex-col gap-4">
+        {filtered.length === 0 && (
+          <div className="p-4 text-center text-gray-500">No products found</div>
+        )}
+
+        {filtered.map((product:any) => (
+          <div
+            key={product.id}
+            onClick={() => {
+              setEditProduct({
+                id: product.id,
+                name: product.name,
+                price: String(product.price),
+                stock: String(product.stock),
+                imageUrl: product.images?.[0] || "",
+                categories: product.categories || [],
+              });
+              setEditModal(true);
+            }}
+            className="bg-white rounded-xl shadow border border-gray-200 p-4 flex gap-4 cursor-pointer active:scale-[0.98] transition"
+          >
+            <img
+              src={product.images?.[0] || "https://via.placeholder.com/80"}
+              className="w-20 h-20 rounded-lg object-cover"
+            />
+
+            <div className="flex flex-col flex-1">
+              <span className="font-semibold text-black text-lg">
+                {product.name}
+              </span>
+
+              <div className="text-indigo-600 font-semibold mt-1">
+                <PriceInCurrency priceForCurrency={product.price} component="p" />
+              </div>
+
+              <span className="text-sm text-gray-500 mt-1">
+                Stock: {product.stock}
+              </span>
+
+              <div className="flex gap-2 flex-wrap mt-2">
+                {(product.categories || []).length === 0 && (
+                  <span className="text-gray-500 text-sm">No categories</span>
+                )}
+
+                {(product.categories || []).map((cat:any) => (
+                  <span
+                    key={cat}
+                    className="px-2 py-1 bg-indigo-600 text-white rounded-full text-xs"
+                  >
+                    {cat}
+                  </span>
+                ))}
+              </div>
+
+              {/* ACTION BUTTONS */}
+              <div className="flex gap-3 mt-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditProduct({
+                      id: product.id,
+                      name: product.name,
+                      price: String(product.price),
+                      stock: String(product.stock),
+                      imageUrl: product.images?.[0] || "",
+                      categories: product.categories || [],
+                    });
+                    setEditModal(true);
+                  }}
+                  className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                >
+                  <Pencil size={16} color="#000000" />
+                </button>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmDelete({ open: true, id: product.id });
+                  }}
+                  className="p-2 bg-red-200 rounded-lg hover:bg-red-300 transition"
+                >
+                  <Trash2 size={16} className="text-red-600" />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
       {/* Delete Confirm */}
       {confirmDelete.open && (
         <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
@@ -853,6 +923,8 @@ export default function ProductsPage() {
           </div>
         </div>
       )}
-    </>
+    </div>
+
+    
   );
 }

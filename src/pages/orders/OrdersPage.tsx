@@ -109,87 +109,134 @@ const randomUser = {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center">
-      <h1 className="text-3xl font-semibold text-black mb-4">Orders</h1>
+  <div className="p-4 md:p-6">
+    <div className="flex justify-between items-center mb-4">
+      <h1 className="text-2xl md:text-3xl font-semibold text-black">Orders</h1>
 
       <button
-  onClick={addTestOrder}
-  className="mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow"
->
-  Add Test Order
-</button>
-</div>
-
-      <div className="bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 text-gray-600 text-sm">
-            <tr>
-              <th className="p-4">Customer</th>
-              <th className="p-4">Total</th>
-              <th className="p-4">Status</th>
-              <th className="p-4">Created</th>
-              <th className="p-4">Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {orders.map((order) => (
-              <tr
-                key={order.id}
-                onClick={() => navigate(`/order/${order.id}`)}
-                className="border-t border-gray-200 hover:bg-gray-100 transition"
-              >
-                <td className="p-4 font-medium text-black">{order.customerName}</td>
-
-                <PriceInCurrency priceForCurrency={order.total} component="td p4" />
-
-                {/* <td className="p-4 text-black">{order.total.toLocaleString('cs-CZ')} CZK</td> */}
-
-                <td className="p-4 text-black">
-                  <span
-                    className={`
-                      px-3 py-1 rounded-full text-xs font-semibold
-                      ${
-                        order.status === "pending"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : order.status === "paid"
-                          ? "bg-green-100 text-green-700"
-                          : order.status === "shipped"
-                          ? "bg-blue-100 text-blue-700"
-                          : "bg-red-100 text-red-700"
-                      }
-                    `}
-                  >
-                    {order.status}
-                  </span>
-                </td>
-
-                <td className="p-4 text-gray-500">
-                  {order.createdAt?.seconds
-                    ? format(order.createdAt.toDate(), "dd.MM.yyyy HH:mm")
-                    : "—"}
-                </td>
-
-                <td className="p-4">
-  <button
-    onClick={() => navigate(`/order/${order.id}`)}
-    className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
-  >
-    <ArrowRight size={18} className="text-indigo-600" />
-  </button>
-</td>
-              </tr>
-            ))}
-          </tbody>
-
-          
-        </table>
-
-        {orders.length === 0 && (
-          <div className="p-6 text-center text-gray-500">No orders yet</div>
-        )}
-      </div>
+        onClick={addTestOrder}
+        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow"
+      >
+        Add Test Order
+      </button>
     </div>
-  );
+
+    {/* DESKTOP TABLE */}
+    <div className="hidden md:block bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
+      <table className="w-full text-left">
+        <thead className="bg-gray-50 text-gray-600 text-sm">
+          <tr>
+            <th className="p-4">Customer</th>
+            <th className="p-4">Total</th>
+            <th className="p-4">Status</th>
+            <th className="p-4">Created</th>
+            <th className="p-4">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {orders.map((order: any) => (
+            <tr
+              key={order.id}
+              onClick={() => navigate(`/order/${order.id}`)}
+              className="border-t border-gray-200 hover:bg-gray-100 transition cursor-pointer"
+            >
+              <td className="p-4 font-medium text-black">{order.customerName}</td>
+
+              <PriceInCurrency priceForCurrency={order.total} component="td p4" />
+
+              <td className="p-4">
+                <span
+                  className={`
+                    px-3 py-1 rounded-full text-xs font-semibold
+                    ${
+                      order.status === "pending"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : order.status === "paid"
+                        ? "bg-green-100 text-green-700"
+                        : order.status === "shipped"
+                        ? "bg-blue-100 text-blue-700"
+                        : "bg-red-100 text-red-700"
+                    }
+                  `}
+                >
+                  {order.status}
+                </span>
+              </td>
+
+              <td className="p-4 text-gray-500">
+                {order.createdAt?.seconds
+                  ? format(order.createdAt.toDate(), "dd.MM.yyyy HH:mm")
+                  : "—"}
+              </td>
+
+              <td className="p-4">
+                <button
+                  onClick={() => navigate(`/order/${order.id}`)}
+                  className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
+                >
+                  <ArrowRight size={18} className="text-indigo-600" />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {orders.length === 0 && (
+        <div className="p-6 text-center text-gray-500">No orders yet</div>
+      )}
+    </div>
+
+    {/* MOBILE CARDS */}
+    <div className="md:hidden flex flex-col gap-4">
+      {orders.map((order: any) => (
+        <div
+          key={order.id}
+          onClick={() => navigate(`/order/${order.id}`)}
+          className="bg-white rounded-xl shadow border border-gray-200 p-4 flex flex-col gap-3 cursor-pointer active:scale-[0.98] transition"
+        >
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold text-black">{order.customerName}</h2>
+
+            <span
+              className={`
+                px-3 py-1 rounded-full text-xs font-semibold
+                ${
+                  order.status === "pending"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : order.status === "paid"
+                    ? "bg-green-100 text-green-700"
+                    : order.status === "shipped"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-red-100 text-red-700"
+                }
+              `}
+            >
+              {order.status}
+            </span>
+          </div>
+
+          <div className="text-gray-500 text-sm">
+            {order.createdAt?.seconds
+              ? format(order.createdAt.toDate(), "dd.MM.yyyy HH:mm")
+              : "—"}
+          </div>
+
+          <div className="text-indigo-600 font-semibold text-m">
+            <PriceInCurrency priceForCurrency={order.total} component="p" />
+          </div>
+
+          <div className="flex justify-end">
+            <ArrowRight size={20} className="text-indigo-600" />
+          </div>
+        </div>
+      ))}
+
+      {orders.length === 0 && (
+        <div className="p-6 text-center text-gray-500">No orders yet</div>
+      )}
+    </div>
+  </div>
+);
 }
