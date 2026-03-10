@@ -22,15 +22,29 @@ import {
 import Chart from "chart.js/auto";
 import { useOrders } from "../providers/OrdersProvider";
 import { useUsers } from "../providers/UsersProvider";
-import { collection, limit, onSnapshot, orderBy, query } from "firebase/firestore";
+import { collection, doc, getDoc, limit, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase";
+import PriceInCurrency from "../components/PriceInCurrency";
 
 export default function DashboardPage() {
-  const { products } = useProducts();
+const { products } = useProducts();
 const { orders } = useOrders();
 const { users } = useUsers();
 
 const [filter, setFilter] = useState("Last 7 days");
+
+async function convertPrice(value: number) {
+  const priceRef = doc(db, "settings", "store");
+  const priceSnap = await getDoc(priceRef);
+
+  const currency = priceSnap.exists() ? priceSnap.data().currency : "CZK";
+
+  if (currency === "CZK") return value;
+  if (currency === "USD") return value / 20.9;
+  if (currency === "EUR") return value / 24.3;
+
+  return value;
+}
 
 type Order = {
   id: string;
@@ -66,6 +80,7 @@ const filterOrdersByRange = (orders: Order[], filter: string) => {
 };
 
 useEffect(() => {
+  async function load() {
   if (!orders.length) return;
 
   const now = new Date();
@@ -234,6 +249,10 @@ useEffect(() => {
   if ((window as any).ordersChart instanceof Chart)
     (window as any).ordersChart.destroy();
 
+  const convertedRevenue = await Promise.all(
+  finalRevenue.map(async (value) => await convertPrice(value))
+);
+
   (window as any).revenueChart = new Chart(revenueCanvas, {
     type: "line",
     data: {
@@ -241,7 +260,7 @@ useEffect(() => {
       datasets: [
         {
           label: "Revenue",
-          data: finalRevenue,
+          data: convertedRevenue,
           borderColor: "#4f46e5",
           tension: 0.4,
         },
@@ -262,6 +281,9 @@ useEffect(() => {
       ],
     },
   });
+}
+
+  load();
 }, [orders, filter]);
 
 const [activity, setActivity] = useState<any[]>([]);
@@ -334,6 +356,7 @@ const timeAgo = (ms: number) => {
   if (days === 1) return "1 day ago";
   return `${days} days ago`;
 };
+
 
 const navigate = useNavigate();
 
@@ -472,7 +495,7 @@ insights.push({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Revenue</p>
-              <h2 className="text-2xl font-bold mt-1">{totalRevenue.toLocaleString('cs-CZ')} CZK</h2>
+              <PriceInCurrency priceForCurrency={totalRevenue} component="h2" />
             </div>
             <div className="bg-green-100 p-3 rounded-full">
               <DollarSign className="text-green-600" size={26} />

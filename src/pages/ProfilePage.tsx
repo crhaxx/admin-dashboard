@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../providers/AuthProvider";
 import { auth, db } from "../firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import defaultpfp from "../assets/defaultpfp.png";
 import {
   updatePassword,
@@ -28,6 +28,13 @@ export default function Profile() {
         firstName,
         lastName,
       });
+
+      await addDoc(collection(db, "activity"), {
+              userName: user.firstName + " " + user.lastName,
+              userId: user.uid,
+              action: "Updated user profile",
+              timestamp: Date.now(),
+          });
       setMessage("Profile updated successfully");
     } catch {
       setMessage("Error while saving profile");
@@ -76,6 +83,14 @@ export default function Profile() {
       await updateDoc(doc(db, "users", user.uid), {
         photoURL: url,
       });
+
+
+      await addDoc(collection(db, "activity"), {
+              userName: user.firstName + " " + user.lastName,
+              userId: user.uid,
+              action: "Updated user avatar",
+              timestamp: Date.now(),
+          });
 
       setPhotoURL(url);
       setMessage("Profile photo updated");

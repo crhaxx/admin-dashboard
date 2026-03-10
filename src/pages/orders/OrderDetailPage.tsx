@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useAuth } from "../../providers/AuthProvider";
+import PriceInCurrency from "../../components/PriceInCurrency";
 
 /* ---------------------------------------------------
    TIMELINE COMPONENT
@@ -311,7 +312,8 @@ export default function OrderDetailPage() {
 
           <div>
             <p className="text-gray-500">Total</p>
-            <p className="font-medium text-black">{order.total.toLocaleString('cs-CZ')} CZK</p>
+            {/* <p className="font-medium text-black">{order.total.toLocaleString('cs-CZ')} CZK</p> */}
+            <PriceInCurrency priceForCurrency={order.total} component="p" />
           </div>
 
           <div>
@@ -429,10 +431,12 @@ export default function OrderDetailPage() {
         </td>
 
         <td className="p-3 text-black">{item.qty}</td>
-        <td className="p-3 text-black">{item.price.toLocaleString('cs-CZ')} CZK</td>
-        <td className="p-3 font-semibold text-black">
+        {/* <td className="p-3 text-black">{item.price.toLocaleString('cs-CZ')} CZK</td> */}
+        <PriceInCurrency priceForCurrency={item.price} component="td p3" />
+        {/* <td className="p-3 font-semibold text-black">
           {(item.qty * item.price).toLocaleString('cs-CZ')} CZK
-        </td>
+        </td> */}
+        <PriceInCurrency priceForCurrency={item.qty * item.price} component="td-semi" />
       </tr>
     );
   })}

@@ -8,6 +8,7 @@ import { db } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { useProducts } from "../../providers/ProductsProvider";
 import { useUsers } from "../../providers/UsersProvider";
+import PriceInCurrency from "../../components/PriceInCurrency";
 
 
 
@@ -141,7 +142,9 @@ const randomUser = {
               >
                 <td className="p-4 font-medium text-black">{order.customerName}</td>
 
-                <td className="p-4 text-black">{order.total.toLocaleString('cs-CZ')} CZK</td>
+                <PriceInCurrency priceForCurrency={order.total} component="td p4" />
+
+                {/* <td className="p-4 text-black">{order.total.toLocaleString('cs-CZ')} CZK</td> */}
 
                 <td className="p-4 text-black">
                   <span

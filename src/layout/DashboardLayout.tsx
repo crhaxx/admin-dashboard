@@ -67,7 +67,7 @@ export default function DashboardLayout() {
   return (
     <div className="flex min-h-screen transition-colors duration-300">
 
-      {/* Sidebar */}
+    {/* Sidebar */}
       <aside
   className="
     fixed left-0 top-0 h-screen w-[250px]
@@ -75,43 +75,45 @@ export default function DashboardLayout() {
     flex flex-col p-6
   "
 >
-
   {/* Logo */}
   <div className="flex flex-col items-center mb-4">
     <img
       src="/logo/prodify-logo.png"
       alt="logo"
       onClick={() => navigate("/")}
-      className="w-[120px] h-[120px] object-cover mb-[-8px]"
+      className="w-[120px] h-[120px] object-cover mb-[-8px] cursor-pointer hover:opacity-90 transition"
     />
-    <h2 className="text-[22px] font-semibold mt-2">{storeName} Dashboard</h2>
+    <h2 className="text-[22px] font-semibold mt-2 tracking-tight">
+      {storeName} Dashboard
+    </h2>
   </div>
 
   {/* Navigation */}
   <nav className="flex flex-col gap-1 mt-2">
     {[
-      { to: "/", label: "Dashboard", icon: <LayoutDashboard size={20} color="#D6BEFA" /> },
-      { to: "/analytics", label: "Analytics", icon: <BarChart2 size={20} color="#D6BEFA" /> },
-      { to: "/orders", label: "Orders", icon: <ShoppingCart size={20} color="#D6BEFA" /> },
-      { to: "/products", label: "Products", icon: <Package size={20} color="#D6BEFA" /> },
-      { to: "/users", label: "Users", icon: <Users size={20} color="#D6BEFA" /> },
+      { to: "/", label: "Dashboard", icon: <LayoutDashboard size={20} color="#6366F1" /> },
+      { to: "/analytics", label: "Analytics", icon: <BarChart2 size={20} color="#6366F1" /> },
+      { to: "/orders", label: "Orders", icon: <ShoppingCart size={20} color="#6366F1" /> },
+      { to: "/products", label: "Products", icon: <Package size={20} color="#6366F1" /> },
+      { to: "/users", label: "Users", icon: <Users size={20} color="#6366F1" /> },
     ].map((item) => (
       <NavLink
-  key={item.to}
-  to={item.to}
-  className={({ isActive }) =>
-    `relative flex items-center gap-3 px-4 py-3 rounded-lg text-[15px] transition-all
-    ${
-      isActive
-        ? "bg-gray-100 font-semibold"
-        : "hover:bg-gray-100 hover:translate-x-1"
-    }`
-  }
->
+        key={item.to}
+        to={item.to}
+        className={({ isActive }) =>
+          `
+          relative flex items-center gap-3 px-4 py-3 rounded-lg text-[15px] transition-all
+          ${isActive
+            ? "bg-indigo-100 font-semibold text-indigo-700"
+            : "hover:bg-indigo-50 hover:text-indigo-600"
+          }
+        `
+        }
+      >
         {({ isActive }) => (
           <>
             {isActive && (
-              <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-[#60d4df] rounded-r-md"></div>
+              <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-indigo-500 rounded-r-md"></div>
             )}
             <span className="opacity-90">{item.icon}</span>
             <span>{item.label}</span>
@@ -124,19 +126,19 @@ export default function DashboardLayout() {
   {/* Management */}
   <div className="mt-6">
     <details className="group">
-      <summary className="cursor-pointer px-2 py-2 text-sm font-semibold text-black hover:text-gray-500 transition flex items-center justify-between">
+      <summary className="cursor-pointer px-2 py-2 text-sm font-semibold text-gray-700 hover:text-indigo-600 transition flex items-center justify-between">
         Management
         <span className="transition-transform group-open:rotate-180">▼</span>
       </summary>
 
       <div className="ml-3 mt-2 flex flex-col gap-2">
-        <NavLink className="text-black hover:text-gray-500 text-sm px-2 py-1 rounded transition" to="/settings">
+        <NavLink className="text-gray-700 hover:text-indigo-600 text-sm px-2 py-1 rounded transition" to="/settings">
           Settings
         </NavLink>
-        <NavLink className="text-black hover:text-gray-500 text-sm px-2 py-1 rounded transition" to="/billing">
+        <NavLink className="text-gray-700 hover:text-indigo-600 text-sm px-2 py-1 rounded transition" to="/billing">
           Billing
         </NavLink>
-        <NavLink className="text-black hover:text-gray-500 text-sm px-2 py-1 rounded transition" to="/logs">
+        <NavLink className="text-gray-700 hover:text-indigo-600 text-sm px-2 py-1 rounded transition" to="/logs">
           Logs
         </NavLink>
       </div>

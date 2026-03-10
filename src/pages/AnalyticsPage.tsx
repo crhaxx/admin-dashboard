@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Chart from "chart.js/auto";
 import { useOrders } from "../providers/OrdersProvider";
 import { useProducts } from "../providers/ProductsProvider";
@@ -10,45 +10,116 @@ import {
   BarChart3,
   Users as UsersIcon,
 } from "lucide-react";
+import { priceInCurrencyFunc } from "../components/PriceInCurrency";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
+
+export async function getPriceValue(price: number) {
+  return await priceInCurrencyFunc(price);
+}
 
 export default function AnalyticsPage() {
   const { orders } = useOrders();
   const { products } = useProducts();
   const { users } = useUsers();
 
+  const [revenueValue, setRevenueValue] = useState("...");
+  const [avOrderValue, setAvOrderValue] = useState("...");
+  const [revenue30State, setRevenue30] = useState(Array(30).fill(0));
+  const [revenue30Raw, setRevenue30Raw] = useState(Array(30).fill(0));
+
+  
+
   // ---- KPI LOGIC ----
   const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
   const totalOrders = orders.length;
   const avgOrderValue = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
   const totalUsers = users.length;
-  const returningCustomers = users.filter((u: any) => u.ordersCount && u.ordersCount > 1).length;
+  
+  const ordersByUser: Record<string, number> = {};
+
+orders.forEach((o: any) => {
+  if (!o.userId) return;
+
+  if (!ordersByUser[o.userId]) ordersByUser[o.userId] = 0;
+  ordersByUser[o.userId]++;
+});
+
+const returningCustomers = Object.values(ordersByUser).filter(count => count > 1).length;
+
+  useEffect(() => {
+    async function load() {
+      const formatted = await getPriceValue(totalRevenue);
+      setRevenueValue(formatted);
+    }
+    load();
+  }, [totalRevenue]);
+
+  useEffect(() => {
+    async function load() {
+      const formatted = await getPriceValue(avgOrderValue);
+      setAvOrderValue(formatted);
+    }
+    load();
+  }, [avgOrderValue]);
 
   const kpis = [
-    { label: "Total Revenue", value: `${totalRevenue.toLocaleString('cs-CZ')} CZK`, color: "text-green-600" },
+    { label: "Total Revenue", value: revenueValue, color: "text-green-600" },
     { label: "Total Orders", value: totalOrders, color: "text-blue-600" },
-    { label: "Avg Order Value", value: `${avgOrderValue.toLocaleString('cs-CZ')} CZK`, color: "text-purple-600" },
+    { label: "Avg Order Value", value: avOrderValue, color: "text-purple-600" },
     { label: "Total Users", value: totalUsers, color: "text-indigo-600" },
     { label: "Returning Customers", value: returningCustomers, color: "text-orange-600" },
   ];
 
   // ---- REVENUE LAST 30 DAYS ----
-  const now = new Date();
-  const labels30 = Array.from({ length: 30 }).map((_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (29 - i));
-    return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  });
 
-  const revenue30 = Array(30).fill(0);
+  async function convertRevenueArrayToCurrency(revenueArray: number[]) {
+  const priceRef = doc(db, "settings", "store");
+  const priceSnap = await getDoc(priceRef);
+
+  const currency = priceSnap.exists() ? priceSnap.data().currency : "CZK";
+
+  if (currency === "CZK") return revenueArray;
+
+  return revenueArray.map(value => {
+    if (currency === "USD") return value / 20.9;
+    if (currency === "EUR") return value / 24.3;
+    return value;
+  });
+}
+
+const labels30 = Array.from({ length: 30 }).map((_, i) => {
+  const d = new Date();
+  d.setDate(d.getDate() - (29 - i));
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+});
+
+useEffect(() => {
+  const now = new Date();
+  const arr = Array(30).fill(0);
+
   orders.forEach(o => {
     if (!o.createdAt?.seconds) return;
+
     const date = new Date(o.createdAt.seconds * 1000);
     const diffDays = Math.floor((now.getTime() - date.getTime()) / 86400000);
+
     if (diffDays >= 0 && diffDays < 30) {
       const index = 29 - diffDays;
-      revenue30[index] += o.total;
+      arr[index] += Number(o.total);
     }
   });
+
+  setRevenue30Raw(arr);
+}, [orders]);
+
+useEffect(() => {
+  async function load() {
+    const converted = await convertRevenueArrayToCurrency(revenue30Raw);
+    setRevenue30(converted);
+  }
+  load();
+}, [revenue30Raw]);
 
   // ---- ORDERS BREAKDOWN ----
   const statusCounts = {
@@ -182,7 +253,7 @@ const topProducts = Object.entries(productSales)
         datasets: [
           {
             label: "Revenue (last 30 days)",
-            data: revenue30,
+            data: revenue30State,
             borderColor: "#4f46e5",
             tension: 0.4,
           },
@@ -224,6 +295,13 @@ const topProducts = Object.entries(productSales)
       },
     });
   }, [orders, products, users]);
+
+  useEffect(() => {
+  if (!(window as any).analyticsRevenueChart) return;
+
+  (window as any).analyticsRevenueChart.data.datasets[0].data = revenue30State;
+  (window as any).analyticsRevenueChart.update();
+}, [revenue30State]);
 
   return (
     <div className="space-y-8">

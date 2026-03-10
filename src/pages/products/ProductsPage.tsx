@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import toast from "react-hot-toast";
 import { useAuth } from "../../providers/AuthProvider";
+import PriceInCurrency from "../../components/PriceInCurrency";
 
 type CategoryDoc = {
   id: string;
@@ -310,9 +311,11 @@ export default function ProductsPage() {
                     </span>
                   </td>
 
-                  <td className="p-4 text-black">
+                  {/* <td className="p-4 text-black">
                     {product.price.toLocaleString('cs-CZ')} CZK
-                  </td>
+                  </td> */}
+
+                  <PriceInCurrency priceForCurrency={product.price} component="td p4" />
 
                   <td className="p-4 text-black">
                     {product.stock}
@@ -541,7 +544,7 @@ export default function ProductsPage() {
 
               <input
                 type="number"
-                placeholder="Price in CZK"
+                placeholder="Price per item"
                 className="w-full p-2 rounded bg-gray-100 text-black"
                 value={newProduct.price}
                 onChange={(e) =>
@@ -727,7 +730,7 @@ export default function ProductsPage() {
 
               <input
                 type="number"
-                placeholder="Price in CZK"
+                placeholder="Price per item"
                 className="w-full p-2 rounded bg-gray-100 text-black"
                 value={editProduct.price}
                 onChange={(e) =>
