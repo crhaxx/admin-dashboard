@@ -6,12 +6,9 @@ import {
   DollarSign,
   Users,
   Package,
-  Plus,
   UserPlus,
   LayoutDashboard,
   Info,
-  Trash,
-  Pencil,
   XCircle,
   AlertTriangle,
   AlertCircle,
@@ -338,7 +335,6 @@ const timeAgo = (ms: number) => {
   return `${days} days ago`;
 };
 
-const [openActions, setOpenActions] = useState(false);
 const navigate = useNavigate();
 
 const getAlertIcon = (text: string) => {

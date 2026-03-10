@@ -1,7 +1,7 @@
 import { useOrders } from "../../providers/OrdersProvider";
 import { format } from "date-fns";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { addDoc, collection, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
 
 import { db } from "../../firebase";

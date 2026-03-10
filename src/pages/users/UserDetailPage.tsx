@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { doc, getDoc, collection, query, where, getDocs, deleteDoc, updateDoc, addDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs, updateDoc, addDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";

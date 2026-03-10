@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useAuth } from "../../providers/AuthProvider";
-import { useProducts } from "../../providers/ProductsProvider";
 
 /* ---------------------------------------------------
    TIMELINE COMPONENT
@@ -91,8 +90,6 @@ export default function OrderDetailPage() {
   const { id } = useParams();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
-  const { products } = useProducts();
 
   const { user } = useAuth();
 
@@ -417,8 +414,6 @@ export default function OrderDetailPage() {
 
           <tbody>
   {order.items?.map((item: any, i: number) => {
-    const product = products.find(p => p.id === item.productId);
-
     return (
       <tr
         key={i}
