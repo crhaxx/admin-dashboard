@@ -25,6 +25,7 @@ import { useUsers } from "../providers/UsersProvider";
 import { collection, doc, getDoc, limit, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase";
 import PriceInCurrency from "../components/PriceInCurrency";
+import { useAuth } from "../providers/AuthProvider";
 
 export default function DashboardPage() {
 const { products } = useProducts();
@@ -55,6 +56,17 @@ type Order = {
   shippedAt?: { seconds: number };
   deliveredAt?: { seconds: number };
 };
+
+  const { user } = useAuth();
+
+const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
+  const greeting = getGreeting();
 
 const filterOrdersByRange = (orders: Order[], filter: string) => {
   const now = new Date();
@@ -456,10 +468,10 @@ insights.push({
 });
 
 
-  return (
-
-    
+  return (    
     <div className="min-h-screen bg-gray-100 p-6 space-y-10">
+
+      <h1 className="text-2xl md:text-3xl font-semibold text-black">{greeting}, {user?.firstName} 👋</h1>
       {/* Dashboard Filters */}
       <div className="flex justify-end gap-2">
   {["Today", "Last 7 days", "Last 30 days", "All time"].map((label) => (

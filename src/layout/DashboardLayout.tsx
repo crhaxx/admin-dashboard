@@ -15,7 +15,6 @@ import { db } from "../firebase";
 
 export default function DashboardLayout() {
   const location = useLocation();
-  const path = location.pathname;
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -29,15 +28,6 @@ export default function DashboardLayout() {
     await logout();
     navigate("/login", { replace: true });
   };
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  };
-
-  const greeting = getGreeting();
 
   useEffect(() => {
     const load = async () => {
@@ -275,7 +265,8 @@ export default function DashboardLayout() {
     px-3 md:px-6
   "
 >
-  {/* Hamburger */}
+
+  {/* Hamburger (mobile only) */}
   <button
     className="md:hidden p-2 text-xl"
     onClick={() => setSidebarOpen(true)}
@@ -283,18 +274,18 @@ export default function DashboardLayout() {
     ☰
   </button>
 
-  {/* Greeting / Title */}
-  {path === "/" ? (
-    <h3 className="text-[16px] md:text-[20px] font-medium text-black">
-      {greeting + ", " + user?.firstName + " 👋"}
-    </h3>
-  ) : (
-    <span className="text-xs md:text-sm text-gray-500">
-      Prodify Dashboard
+  {/* Left side: Logo + Prodify */}
+  <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
+    <img
+      src="/logo/prodify-logo.png"
+      className="w-[26px] h-[26px] md:w-[32px] md:h-[32px] object-cover"
+    />
+    <span className="text-[15px] md:text-[17px] font-semibold text-black tracking-tight">
+      Prodify
     </span>
-  )}
+  </div>
 
-  {/* Dropdown */}
+  {/* Right side: Profile dropdown */}
   <div ref={dropdownRef} className="relative">
     <div
       onClick={() => setOpen((prev) => !prev)}
