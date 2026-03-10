@@ -9,12 +9,10 @@ import {
   Package,
   Users,
 } from "lucide-react";
-import { useLocation } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
 export default function DashboardLayout() {
-  const location = useLocation();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
