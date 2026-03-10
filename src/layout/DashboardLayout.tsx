@@ -266,61 +266,89 @@ export default function DashboardLayout() {
       {/* MAIN CONTENT */}
       <div className="flex flex-col flex-1 md:ml-[250px]">
         {/* Top Bar */}
-        <header className="h-[65px] bg-gradient-to-r from-white to-gray-50 border-b border-gray-200 flex items-center justify-between px-6">
-          {/* Hamburger */}
-          <button
-            className="md:hidden p-3 text-2xl"
-            onClick={() => setSidebarOpen(true)}
-          >
-            ☰
-          </button>
+        <header
+  className="
+    h-[55px] md:h-[65px]
+    bg-gradient-to-r from-white to-gray-50
+    border-b border-gray-200
+    flex items-center justify-between
+    px-3 md:px-6
+  "
+>
+  {/* Hamburger */}
+  <button
+    className="md:hidden p-2 text-xl"
+    onClick={() => setSidebarOpen(true)}
+  >
+    ☰
+  </button>
 
-          {path === "/" ? (
-            <h3 className="text-[20px] font-medium text-black">
-              {greeting + ", " + user?.firstName + " 👋"}
-            </h3>
-          ) : (
-            <span className="text-sm text-gray-500">Prodify Dashboard</span>
-          )}
+  {/* Greeting / Title */}
+  {path === "/" ? (
+    <h3 className="text-[16px] md:text-[20px] font-medium text-black">
+      {greeting + ", " + user?.firstName + " 👋"}
+    </h3>
+  ) : (
+    <span className="text-xs md:text-sm text-gray-500">
+      Prodify Dashboard
+    </span>
+  )}
 
-          {/* Dropdown */}
-          <div ref={dropdownRef} className="relative">
-            <div
-              onClick={() => setOpen((prev) => !prev)}
-              className="cursor-pointer px-4 py-2 bg-[#f0f0f0] rounded-lg flex items-center gap-3 transition"
-            >
-              <img
-                src={user?.photoURL || defaultpfp}
-                className="w-[34px] h-[34px] rounded-full object-cover"
-              />
-              <span className="text-black">
-                {user?.firstName} {user?.lastName}
-              </span>
-              <span className="text-xs text-black">{open ? "▲" : "▼"}</span>
-            </div>
+  {/* Dropdown */}
+  <div ref={dropdownRef} className="relative">
+    <div
+      onClick={() => setOpen((prev) => !prev)}
+      className="
+        cursor-pointer
+        px-2 md:px-4
+        py-1.5 md:py-2
+        bg-[#f0f0f0]
+        rounded-lg
+        flex items-center gap-2 md:gap-3
+        transition
+      "
+    >
+      <img
+        src={user?.photoURL || defaultpfp}
+        className="w-[28px] h-[28px] md:w-[34px] md:h-[34px] rounded-full object-cover"
+      />
+      <span className="text-black text-sm md:text-base">
+        {user?.firstName} {user?.lastName}
+      </span>
+      <span className="text-[10px] md:text-xs text-black">
+        {open ? "▲" : "▼"}
+      </span>
+    </div>
 
-            {open && (
-              <div className="absolute top-12 right-0 bg-white border border-gray-200 rounded-lg shadow-lg w-[170px] z-10 animate-dropdown">
-                <button
-                  className="w-full px-4 py-3 bg-white text-left hover:bg-gray-100 transition text-black"
-                  onClick={() => {
-                    navigate("/profile");
-                    setOpen(false);
-                  }}
-                >
-                  Profile
-                </button>
+    {open && (
+      <div
+        className="
+          absolute top-10 md:top-12 right-0
+          bg-white border border-gray-200 rounded-lg shadow-lg
+          w-[150px] md:w-[170px]
+          z-10 animate-dropdown
+        "
+      >
+        <button
+          className="w-full px-4 py-2 md:py-3 bg-white text-left hover:bg-gray-100 transition text-black text-sm"
+          onClick={() => {
+            navigate("/profile");
+            setOpen(false);
+          }}
+        >
+          Profile
+        </button>
 
-                <button
-                  className="w-full px-4 py-3 bg-white text-left text-red-500 hover:bg-gray-100 transition"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-        </header>
+        <button
+          className="w-full px-4 py-2 md:py-3 bg-white text-left text-red-500 hover:bg-gray-100 transition text-sm"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
+      </div>
+    )}
+  </div>
+</header>
 
         {/* Page content */}
         <main className="flex-1 px-4 md:px-6 pb-6 pt-2 animate-fadeSlideInd">
