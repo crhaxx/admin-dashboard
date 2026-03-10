@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../providers/AuthProvider";
 import { auth, db } from "../firebase";
 import { doc, updateDoc } from "firebase/firestore";
+import defaultpfp from "../assets/defaultpfp.png";
 import {
   updatePassword,
   EmailAuthProvider,
@@ -27,9 +28,9 @@ export default function Profile() {
         firstName,
         lastName,
       });
-      setMessage("Profil byl úspěšně aktualizován");
+      setMessage("Profile updated successfully");
     } catch {
-      setMessage("Chyba při ukládání");
+      setMessage("Error while saving profile");
     }
   };
 
@@ -45,10 +46,10 @@ export default function Profile() {
       await reauthenticateWithCredential(currentUser!, credential);
       await updatePassword(currentUser!, newPassword);
 
-      setMessage("Heslo bylo změněno");
+      setMessage("Password changed successfully");
     } catch (err) {
       console.error(err);
-      setMessage("Chyba při změně hesla");
+      setMessage("Error while changing password");
     }
   };
 
@@ -77,65 +78,75 @@ export default function Profile() {
       });
 
       setPhotoURL(url);
-      setMessage("Profilová fotka byla aktualizována");
+      setMessage("Profile photo updated");
 
       updateUserProfile({ photoURL: url });
     } catch (err) {
       console.error(err);
-      setMessage("Chyba při nahrávání fotky");
+      setMessage("Error while uploading photo");
     }
   };
 
   return (
-    <div className="min-h-screen p-6 text-black dark:text-white transition-colors duration-300 bg-white dark:bg-black">
-
-      {/* Back button */}
+    
+    <div className="min-h-screen p-6 text-black bg-[#F5F5F5]">
+{/* Back button */}
       <button
         onClick={() => navigate("/")}
-        className="px-4 py-2 bg-gray-200 dark:bg-[#222] border border-gray-300 dark:border-[#444] rounded-lg text-sm hover:bg-gray-300 dark:hover:bg-[#333] transition"
+        className="px-4 py-2 bg-gray-200 border border-gray-300 rounded-lg text-sm hover:bg-gray-300 transition"
       >
-        ← Zpět na dashboard
+        ← Back to Dashboard
       </button>
-
-      <h1 className="text-2xl font-semibold mt-6 mb-6">Nastavení profilu</h1>
+      <h1 className="text-2xl font-semibold mt-6 mb-6">Profile Settings</h1>
 
       {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {/* Profile photo */}
-        <div className="bg-white dark:bg-black p-6 rounded-xl shadow-md transition-colors duration-300">
-          <h3 className="text-lg font-semibold mb-4">Profilová fotka</h3>
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h3 className="text-lg font-semibold mb-4">Profile Photo</h3>
 
-          {photoURL && (
+          {(photoURL || defaultpfp) && (
             <img
-              src={photoURL}
-              alt="Profilová fotka"
-              className="w-36 h-36 rounded-full object-cover border-4 border-gray-200 dark:border-[#333] mb-4"
+              src={photoURL || defaultpfp}
+              alt="Profile"
+              className="w-36 h-36 rounded-full object-cover border-4 border-gray-200 mb-4"
             />
           )}
 
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoUpload}
-            className="text-sm"
-          />
+          <div className="space-y-2">
+
+  <label
+    htmlFor="photo-upload"
+    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded-lg cursor-pointer hover:bg-blue-700 transition"
+  >
+    Upload Photo
+  </label>
+
+  <input
+    id="photo-upload"
+    type="file"
+    accept="image/*"
+    onChange={handlePhotoUpload}
+    className="hidden"
+  />
+</div>
         </div>
 
         {/* Personal info */}
-        <div className="bg-white dark:bg-[#111] p-6 rounded-xl shadow-md transition-colors duration-300">
-          <h3 className="text-lg font-semibold mb-4">Osobní údaje</h3>
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
 
-          <label className="font-medium mb-1 block">Jméno</label>
+          <label className="font-medium mb-1 block">First Name</label>
           <input
-            className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] text-black dark:text-white mb-4"
+            className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-black mb-4"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
 
-          <label className="font-medium mb-1 block">Příjmení</label>
+          <label className="font-medium mb-1 block">Last Name</label>
           <input
-            className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] text-black dark:text-white mb-4"
+            className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-black mb-4"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
           />
@@ -144,27 +155,27 @@ export default function Profile() {
             onClick={handleSave}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
           >
-            Uložit změny
+            Save Changes
           </button>
         </div>
       </div>
 
       {/* Password change */}
-      <div className="bg-white dark:bg-[#111] p-6 rounded-xl shadow-md mt-6 transition-colors duration-300">
-        <h3 className="text-lg font-semibold mb-4">Změna hesla</h3>
+      <div className="bg-white p-6 rounded-xl shadow-md mt-6">
+        <h3 className="text-lg font-semibold mb-4">Change Password</h3>
 
-        <label className="font-medium mb-1 block">Aktuální heslo</label>
+        <label className="font-medium mb-1 block">Current Password</label>
         <input
           type="password"
-          className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] text-black dark:text-white mb-4"
+          className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-black mb-4"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
         />
 
-        <label className="font-medium mb-1 block">Nové heslo</label>
+        <label className="font-medium mb-1 block">New Password</label>
         <input
           type="password"
-          className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] text-black dark:text-white mb-4"
+          className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-black mb-4"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
@@ -173,12 +184,12 @@ export default function Profile() {
           onClick={handlePasswordChange}
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
         >
-          Změnit heslo
+          Change Password
         </button>
       </div>
 
       {message && (
-        <p className="mt-4 px-4 py-3 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-lg max-w-md">
+        <p className="mt-4 px-4 py-3 bg-blue-100 text-blue-700 rounded-lg max-w-md">
           {message}
         </p>
       )}

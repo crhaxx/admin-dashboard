@@ -45,7 +45,7 @@ const Timeline = ({ order }: { order: any }) => {
               <div
                 className={`
                   w-10 h-10 rounded-full flex items-center justify-center
-                  ${isActive ? "bg-indigo-600 text-white" : "bg-gray-300 dark:bg-[#333] text-gray-600"}
+                  ${isActive ? "bg-indigo-600 text-white" : "bg-gray-300 text-gray-600"}
                 `}
               >
                 {step.icon}
@@ -280,7 +280,7 @@ export default function OrderDetailPage() {
       <div className="flex items-center gap-3 mb-4">
         <button
           onClick={() => navigate("/orders")}
-          className="px-4 py-2 bg-gray-200 dark:bg-[#333] text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-[#444] transition"
+          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
         >
           ← Back to Orders
         </button>
@@ -300,21 +300,21 @@ export default function OrderDetailPage() {
         </button>
       </div>
 
-      <h1 className="text-2xl font-semibold mb-4 text-white">Order #{order.id}</h1>
+      <h1 className="text-2xl font-semibold mb-4 text-black">Order #{order.id}</h1>
 
       {/* Order Info */}
-      <div className="bg-white dark:bg-[#1a1a1a] rounded-xl shadow border border-gray-200 dark:border-[#333] p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-4 text-white">Order Details</h2>
+      <div className="bg-white rounded-xl shadow border border-gray-200 p-6 mb-6">
+        <h2 className="text-lg font-semibold mb-4 text-black">Order Details</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-gray-500">Customer</p>
-            <p className="font-medium text-white">{order.customerName}</p>
+            <p className="font-medium text-black">{order.customerName}</p>
           </div>
 
           <div>
             <p className="text-gray-500">Total</p>
-            <p className="font-medium text-white">{order.total.toFixed(2)} CZK</p>
+            <p className="font-medium text-black">{order.total.toLocaleString('cs-CZ')} CZK</p>
           </div>
 
           <div>
@@ -339,7 +339,7 @@ export default function OrderDetailPage() {
 
           <div>
             <p className="text-gray-500">Created</p>
-            <p className="font-medium text-white">
+            <p className="font-medium text-black">
               {order.createdAt?.seconds
                 ? format(order.createdAt.toDate(), "dd.MM.yyyy HH:mm")
                 : "—"}
@@ -351,8 +351,8 @@ export default function OrderDetailPage() {
         <Timeline order={order} />
 
         {/* Shipping Info */}
-        <div className="bg-white dark:bg-[#1a1a1a] rounded-xl shadow border border-gray-200 dark:border-[#333] p-6 mt-6">
-          <h2 className="text-lg font-semibold mb-4 text-white">Shipping Info</h2>
+        <div className="bg-white rounded-xl shadow border border-gray-200 p-6 mt-6">
+          <h2 className="text-lg font-semibold mb-4 text-black">Shipping Info</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div>
@@ -362,7 +362,7 @@ export default function OrderDetailPage() {
                 defaultValue={order.trackingNumber || ""}
                 onBlur={(e) => updateShipping("trackingNumber", e.target.value)}
                 placeholder="Enter tracking number"
-                className="mt-1 w-full px-3 py-2 text-white rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
@@ -373,7 +373,7 @@ export default function OrderDetailPage() {
                 defaultValue={order.shippingCarrier || ""}
                 onBlur={(e) => updateShipping("shippingCarrier", e.target.value)}
                 placeholder="e.g. PPL, DPD, GLS"
-                className="mt-1 w-full px-3 py-2 text-white rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
@@ -383,7 +383,7 @@ export default function OrderDetailPage() {
                 defaultValue={order.shippingNote || ""}
                 onBlur={(e) => updateShipping("shippingNote", e.target.value)}
                 placeholder="Optional note for courier"
-                className="mt-1 w-full px-3 py-2 text-white rounded-lg border border-gray-300 dark:border-[#444] bg-white dark:bg-[#222] focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-full px-3 py-2 text-black rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
@@ -392,7 +392,7 @@ export default function OrderDetailPage() {
                 href={trackingUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 underline text-sm"
+                className="text-indigo-600 hover:text-indigo-800 underline text-sm"
               >
                 Open Tracking Link →
               </a>
@@ -402,11 +402,11 @@ export default function OrderDetailPage() {
       </div>
 
       {/* Items */}
-      <div className="bg-white dark:bg-[#1a1a1a] rounded-xl shadow border border-gray-200 dark:border-[#333] p-6">
-        <h2 className="text-lg font-semibold mb-4 text-white">Items</h2>
+      <div className="bg-white rounded-xl shadow border border-gray-200 p-6">
+        <h2 className="text-lg font-semibold mb-4 text-black">Items</h2>
 
         <table className="w-full text-left text-sm">
-          <thead className="bg-gray-50 dark:bg-[#111] text-gray-600 dark:text-gray-300">
+          <thead className="bg-gray-50 text-gray-600">
             <tr>
               <th className="p-3">Product</th>
               <th className="p-3">Qty</th>
@@ -422,21 +422,21 @@ export default function OrderDetailPage() {
     return (
       <tr
         key={i}
-        className="border-t border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#222] transition"
+        className="border-t border-gray-200 hover:bg-gray-50 transition"
       >
-        <td className="p-3 font-medium text-white flex items-center gap-3">
+        <td className="p-3 font-medium text-black flex items-center gap-3">
           <img
             src={item?.images?.[0] || "/placeholder.png"}
             alt={item.name}
-            className="w-12 h-12 rounded-lg object-cover border border-[#333]"
+            className="w-12 h-12 rounded-lg object-cover border border-[#222]"
           />
           {item.name}
         </td>
 
-        <td className="p-3 text-white">{item.qty}</td>
-        <td className="p-3 text-white">{item.price.toFixed(2)} CZK</td>
-        <td className="p-3 font-semibold text-white">
-          {(item.qty * item.price).toFixed(2)} CZK
+        <td className="p-3 text-black">{item.qty}</td>
+        <td className="p-3 text-black">{item.price.toLocaleString('cs-CZ')} CZK</td>
+        <td className="p-3 font-semibold text-black">
+          {(item.qty * item.price).toLocaleString('cs-CZ')} CZK
         </td>
       </tr>
     );

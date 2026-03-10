@@ -45,14 +45,14 @@ const randomUser = {
 
     const itemCount = Math.min(
       Math.floor(Math.random() * 3) + 1,
-      7
+      5
     );
 
     const shuffled = [...availableProducts].sort(() => Math.random() - 0.5);
     const selectedProducts = shuffled.slice(0, itemCount);
 
     const items = selectedProducts.map((product: any) => {
-      const qty = Math.floor(Math.random() * product.stock) + 1;
+      const qty = Math.floor(Math.random() * Math.min(product.stock, 5)) + 1;
 
       return {
         productId: product.id,
@@ -109,7 +109,7 @@ const randomUser = {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4 text-white">Orders</h1>
+      <h1 className="text-3xl font-semibold text-black mb-4">Orders</h1>
 
       <button
   onClick={addTestOrder}
@@ -118,9 +118,9 @@ const randomUser = {
   Add Test Order
 </button>
 
-      <div className="bg-white dark:bg-[#1a1a1a] rounded-xl shadow border border-gray-200 dark:border-[#333] overflow-hidden">
+      <div className="bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
         <table className="w-full text-left">
-          <thead className="bg-gray-50 dark:bg-[#111] text-gray-600 dark:text-gray-300 text-sm">
+          <thead className="bg-gray-50 text-gray-600 text-sm">
             <tr>
               <th className="p-4">Customer</th>
               <th className="p-4">Total</th>
@@ -134,13 +134,13 @@ const randomUser = {
             {orders.map((order) => (
               <tr
                 key={order.id}
-                className="border-t border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#222] transition"
+                className="border-t border-gray-200 hover:bg-gray-100 transition"
               >
-                <td className="p-4 font-medium dark:text-white">{order.customerName}</td>
+                <td className="p-4 font-medium text-black">{order.customerName}</td>
 
-                <td className="p-4 dark:text-white">{order.total.toFixed(2)} CZK</td>
+                <td className="p-4 text-black">{order.total.toLocaleString('cs-CZ')} CZK</td>
 
-                <td className="p-4 dark:text-white">
+                <td className="p-4 text-black">
                   <span
                     className={`
                       px-3 py-1 rounded-full text-xs font-semibold
@@ -159,7 +159,7 @@ const randomUser = {
                   </span>
                 </td>
 
-                <td className="p-4 text-gray-500 dark:text-white">
+                <td className="p-4 text-gray-500">
                   {order.createdAt?.seconds
                     ? format(order.createdAt.toDate(), "dd.MM.yyyy HH:mm")
                     : "—"}
@@ -168,7 +168,7 @@ const randomUser = {
                 <td className="p-4">
   <button
     onClick={() => navigate(`/order/${order.id}`)}
-    className="p-2 rounded-lg bg-gray-100 dark:bg-[#222] hover:bg-gray-200 dark:hover:bg-[#333] transition"
+    className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
   >
     <ArrowRight size={18} className="text-indigo-600" />
   </button>

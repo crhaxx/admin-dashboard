@@ -7,6 +7,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [redirecting, setRedirecting] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -21,6 +22,14 @@ export default function LoginPage() {
     );
   }
 
+  if (redirecting) {
+  return (
+    <div className="h-screen flex items-center justify-center text-gray-600 dark:text-gray-300 text-xl">
+      Redirecting...
+    </div>
+  );
+}
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -31,7 +40,11 @@ export default function LoginPage() {
       return;
     }
 
+    setRedirecting(true);
+
+  setTimeout(() => {
     navigate(from, { replace: true });
+  }, 1000); // 1s delay
   };
 
   return (

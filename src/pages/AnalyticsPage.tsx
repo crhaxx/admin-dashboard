@@ -24,9 +24,9 @@ export default function AnalyticsPage() {
   const returningCustomers = users.filter((u: any) => u.ordersCount && u.ordersCount > 1).length;
 
   const kpis = [
-    { label: "Total Revenue", value: `${totalRevenue.toFixed(1)} CZK`, color: "text-green-600" },
+    { label: "Total Revenue", value: `${totalRevenue.toLocaleString('cs-CZ')} CZK`, color: "text-green-600" },
     { label: "Total Orders", value: totalOrders, color: "text-blue-600" },
-    { label: "Avg Order Value", value: `$${avgOrderValue}`, color: "text-purple-600" },
+    { label: "Avg Order Value", value: `${avgOrderValue.toLocaleString('cs-CZ')} CZK`, color: "text-purple-600" },
     { label: "Total Users", value: totalUsers, color: "text-indigo-600" },
     { label: "Returning Customers", value: returningCustomers, color: "text-orange-600" },
   ];
@@ -227,6 +227,10 @@ const topProducts = Object.entries(productSales)
 
   return (
     <div className="space-y-8">
+      <h1 className="text-3xl font-semibold text-black">
+            Analytics
+          </h1>
+
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {kpis.map((k, i) => (
@@ -296,7 +300,7 @@ const topProducts = Object.entries(productSales)
             {topProducts.map(p => (
               <tr key={p.id} className="border-b last:border-0">
                 <td className="py-2">{p.name}</td>
-                <td className="py-2">{p.revenue.toFixed(0)} CZK</td>
+                <td className="py-2">{p.revenue.toLocaleString('cs-CZ')} CZK</td>
               </tr>
             ))}
             {topProducts.length === 0 && (

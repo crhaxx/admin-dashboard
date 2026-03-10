@@ -18,11 +18,11 @@ export default function UsersPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4 text-white">Users</h1>
+      <h1 className="text-3xl font-semibold mb-4 text-black">Users</h1>
 
-      <div className="bg-white dark:bg-[#1a1a1a] rounded-xl shadow border border-gray-200 dark:border-[#333] overflow-hidden">
+      <div className="bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
         <table className="w-full text-left">
-          <thead className="bg-gray-50 dark:bg-[#111] text-gray-600 dark:text-gray-300 text-sm">
+          <thead className="bg-gray-50 text-gray-600 text-sm">
             <tr>
               <th className="p-4">User</th>
               <th className="p-4">Role</th>
@@ -35,7 +35,7 @@ export default function UsersPage() {
               <tr
   key={user.id}
   onClick={() => navigate(`/user/${user.id}`)}
-  className="cursor-pointer border-t border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#222] transition"
+  className="cursor-pointer border-t border-gray-200 hover:bg-gray-50 transition"
 >
                 <td className="p-4 flex items-center gap-3">
                   <img
@@ -48,12 +48,12 @@ export default function UsersPage() {
                   />
 
                   <div className="flex flex-col">
-                    <span className="font-medium text-white">{user.firstName} {user.lastName}</span>
+                    <span className="font-medium text-black">{user.firstName} {user.lastName}</span>
                     <span className="text-xs text-gray-400">{user.email}</span>
                   </div>
                 </td>
 
-                <td className="p-4 text-white">{user.role || "user"}</td>
+                <td className="p-4 text-black">{user.role || "user"}</td>
 
                 <td className="p-4 text-gray-400">
                   {user.createdAt?.seconds

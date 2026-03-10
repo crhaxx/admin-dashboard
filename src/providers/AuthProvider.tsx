@@ -8,7 +8,7 @@ import {
   signOut,
 } from "firebase/auth";
 
-import { setDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
+import { setDoc, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 
 type UserProfile = {
   uid: string;
@@ -72,7 +72,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = async (email: string, password: string) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      const userRef = doc(db, "users", user.uid);
+    await updateDoc(userRef, {
+      lastLogin: serverTimestamp(),
+    });
       return true;
     } catch {
       return false;
@@ -96,6 +102,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         firstName,
         lastName,
         email,
+        lastLogin: serverTimestamp(),
         createdAt: serverTimestamp(),
       });
 

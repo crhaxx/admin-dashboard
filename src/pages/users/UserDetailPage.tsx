@@ -84,7 +84,7 @@ export default function UserDetailPage() {
   const deleteUser = async () => {
   const auth = getAuth();
 
-  // 🛑 Prevent deleting yourself
+  // Prevent deleting yourself
   if (auth.currentUser?.uid === id) {
     toast.error("You cannot delete your own admin account");
     return;
@@ -131,13 +131,13 @@ export default function UserDetailPage() {
     <div className="p-6">
       <button
         onClick={() => navigate("/users")}
-        className="px-4 py-2 mb-4 bg-gray-200 dark:bg-[#333] text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-[#444] transition"
+        className="px-4 py-2 mb-4 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
       >
         ← Back to Users
       </button>
 
       {/* PROFILE HEADER */}
-      <div className="bg-white dark:bg-[#1a1a1a] rounded-xl shadow border border-gray-200 dark:border-[#333] p-6">
+      <div className="bg-white rounded-xl shadow border border-gray-200 p-6">
         <div className="flex items-center gap-6">
           <img
             src={avatarUrl}
@@ -146,7 +146,7 @@ export default function UserDetailPage() {
           />
 
           <div>
-            <h1 className="text-2xl font-semibold text-white">
+            <h1 className="text-2xl font-semibold text-black">
               {displayedUser.firstName} {displayedUser.lastName}
             </h1>
             <p className="text-gray-400">{displayedUser.email}</p>
@@ -157,7 +157,7 @@ export default function UserDetailPage() {
   onChange={(e) => updateRole(e.target.value)}
   className="
     mt-2 px-3 py-1 rounded-lg text-sm font-medium
-    bg-[#111] text-white border border-[#333]
+    bg-white text-black border border-gray-400
     focus:ring-2 focus:ring-indigo-500
   "
 >
@@ -169,23 +169,23 @@ export default function UserDetailPage() {
 
         {/* INFO CARDS */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-          <div className="p-4 bg-[#111] rounded-xl border border-[#333]">
+          <div className="p-4 bg-white rounded-xl border border-gray-200">
             <p className="text-gray-500 text-sm">Orders</p>
-            <p className="text-xl font-semibold text-white">{orders.length}</p>
+            <p className="text-xl font-semibold text-black">{orders.length}</p>
           </div>
 
-          <div className="p-4 bg-[#111] rounded-xl border border-[#333]">
+          <div className="p-4 bg-white rounded-xl border border-gray-200">
             <p className="text-gray-500 text-sm">Last Login</p>
-            <p className="text-white">
-              {displayedUser.lastLogin
-                ? format(new Date(displayedUser.lastLogin), "dd.MM.yyyy HH:mm")
+            <p className="text-black">
+              {displayedUser.lastLogin?.seconds
+                ? format(displayedUser.createdAt.toDate(), "dd.MM.yyyy, hh:mm")
                 : "—"}
             </p>
           </div>
 
-          <div className="p-4 bg-[#111] rounded-xl border border-[#333]">
+          <div className="p-4 bg-white rounded-xl border border-gray-200">
             <p className="text-gray-500 text-sm">Member Since</p>
-            <p className="text-white">
+            <p className="text-black">
               {displayedUser.createdAt?.seconds
                 ? format(displayedUser.createdAt.toDate(), "dd.MM.yyyy")
                 : "—"}
@@ -195,14 +195,14 @@ export default function UserDetailPage() {
       </div>
 
       {/* USER ORDERS */}
-      <div className="bg-white dark:bg-[#1a1a1a] rounded-xl shadow border border-gray-200 dark:border-[#333] p-6 mt-6">
-        <h2 className="text-lg font-semibold mb-4 text-white">User Orders</h2>
+      <div className="bg-white rounded-xl shadow border border-gray-200 p-6 mt-6">
+        <h2 className="text-lg font-semibold mb-4 text-black">User Orders</h2>
 
         {orders.length === 0 ? (
           <p className="text-gray-500">No orders found</p>
         ) : (
           <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 dark:bg-[#111] text-gray-600 dark:text-gray-300">
+            <thead className="bg-gray-50 text-gray-600">
               <tr>
                 <th className="p-3">Order ID</th>
                 <th className="p-3">Total</th>
@@ -216,11 +216,11 @@ export default function UserDetailPage() {
                 <tr
                   key={o.id}
                   onClick={() => navigate(`/order/${o.id}`)}
-                  className="cursor-pointer border-t border-gray-200 dark:border-[#333] hover:bg-gray-50 dark:hover:bg-[#222] transition"
+                  className="cursor-pointer border-t border-gray-200 hover:bg-gray-50 transition"
                 >
-                  <td className="p-3 text-white">{o.id}</td>
-                  <td className="p-3 text-white">${o.total.toFixed(2)}</td>
-                  <td className="p-3 text-white">{o.status}</td>
+                  <td className="p-3 text-black">{o.id}</td>
+                  <td className="p-3 text-black">${o.total.toFixed(2)}</td>
+                  <td className="p-3 text-black">{o.status}</td>
                   <td className="p-3 text-gray-400">
                     {o.createdAt?.seconds
                       ? format(o.createdAt.toDate(), "dd.MM.yyyy HH:mm")
@@ -234,8 +234,8 @@ export default function UserDetailPage() {
       </div>
 
       {/* ACTIVITY LOG */}
-      <div className="bg-white dark:bg-[#1a1a1a] rounded-xl shadow border border-gray-200 dark:border-[#333] p-6 mt-6">
-        <h2 className="text-lg font-semibold mb-4 text-white">Activity Log</h2>
+      <div className="bg-white rounded-xl shadow border border-gray-200 p-6 mt-6">
+        <h2 className="text-lg font-semibold mb-4 text-black">Activity Log</h2>
 
         {activity.length === 0 ? (
           <p className="text-gray-500">No activity recorded</p>
@@ -243,7 +243,7 @@ export default function UserDetailPage() {
           <ul className="space-y-3">
             {activity.map((a) => (
               <li key={a.id} className="text-gray-300">
-                <span className="font-medium text-white">{a.action}</span>{" "}
+                <span className="font-medium text-black">{a.action}</span>{" "}
                 — {format(new Date(a.timestamp), "dd.MM.yyyy HH:mm")}
               </li>
             ))}
@@ -252,9 +252,9 @@ export default function UserDetailPage() {
       </div>
 
       {/* DANGER ZONE */}
-      <div className="bg-red-900/20 border border-red-700 rounded-xl p-6 mt-6">
-        <h2 className="text-lg font-semibold text-red-400 mb-2">Danger Zone</h2>
-        <p className="text-red-300 text-sm mb-4">
+      <div className="bg-red-900/10 border border-red-700 rounded-xl p-6 mt-6">
+        <h2 className="text-lg font-semibold text-red-500 mb-2">Danger Zone</h2>
+        <p className="text-red-400 text-sm mb-4">
           Deleting this user is permanent and cannot be undone.
         </p>
         

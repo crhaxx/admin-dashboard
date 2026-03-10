@@ -12,7 +12,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   if (loading) {
   return (
-    <div className="flex items-center justify-center h-screen bg-black/5 dark:bg-black/20">
+    <div className="flex items-center justify-center h-screen bg-black/5">
       <div className="relative w-12 h-12">
         <div className="absolute inset-0 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin"></div>
       </div>

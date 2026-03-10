@@ -440,39 +440,7 @@ insights.push({
   return (
 
     
-    <div className="min-h-screen bg-gray-100 dark:bg-[#0d0d0d] p-6 space-y-10">
-
-  {/* Quick Actions */}
-  <div className="flex justify-end">
-    <div className="relative">
-      <button
-        onClick={() => setOpenActions((prev) => !prev)}
-        className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-[#fffffff] dark:hover:bg-[#cccccc] rounded-lg transition"
-      >
-        <Plus size={18} />
-        <span>Create</span>
-      </button>
-
-      {openActions && (
-        <div className="absolute right-0 mt-2 bg-white dark:bg-[#ffffff] border border-gray-200 dark:border-[#333] rounded-lg shadow-lg w-44 z-20">
-          <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#cccccc] flex items-center gap-2">
-            <Plus size={16} /> Add Product
-          </button>
-          <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#cccccc] flex items-center gap-2">
-            <ShoppingCart size={16} /> Create Order
-          </button>
-          <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#cccccc] flex items-center gap-2">
-            <UserPlus size={16} /> Invite User
-          </button>
-          <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#cccccc] flex items-center gap-2">
-            <Package size={16} /> Add Inventory
-          </button>
-        </div>
-      )}
-    </div>
-</div>
-
-
+    <div className="min-h-screen bg-gray-100 p-6 space-y-10">
       {/* Dashboard Filters */}
       <div className="flex justify-end gap-2">
   {["Today", "Last 7 days", "Last 30 days", "All time"].map((label) => (
@@ -488,13 +456,10 @@ insights.push({
   ))}
 </div>
 
-      {/* Overview */}
-      <h1 className="text-3xl font-semibold text-dark dark:text-white">Overview</h1>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
         {/* Orders */}
-        <div className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition cursor-pointer">
+        <div className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Orders</p>
@@ -507,11 +472,11 @@ insights.push({
         </div>
 
         {/* Revenue */}
-        <div className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition cursor-pointer">
+        <div className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Revenue</p>
-              <h2 className="text-2xl font-bold mt-1">{totalRevenue.toFixed(0)} CZK</h2>
+              <h2 className="text-2xl font-bold mt-1">{totalRevenue.toLocaleString('cs-CZ')} CZK</h2>
             </div>
             <div className="bg-green-100 p-3 rounded-full">
               <DollarSign className="text-green-600" size={26} />
@@ -520,7 +485,7 @@ insights.push({
         </div>
 
         {/* Users */}
-        <div className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition cursor-pointer">
+        <div className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Users</p>
@@ -533,7 +498,7 @@ insights.push({
         </div>
 
         {/* Products */}
-        <div className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition cursor-pointer">
+        <div className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Products</p>

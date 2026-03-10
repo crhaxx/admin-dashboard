@@ -14,7 +14,9 @@ import ProfilePage from "../pages/ProfilePage";
 import DashboardPage from "../pages/DashboardPage";
 import OrderDetailPage from "../pages/orders/OrderDetailPage";
 import UserDetailPage from "../pages/users/UserDetailPage";
-import LogPage from "../pages/LogsPage";
+import LogPage from "../pages/management/ActivityLogsPage";
+import SettingsPage from "../pages/management/SettingsPage";
+import BillingPage from "../pages/management/BillingPage";
 
 const router = createBrowserRouter([
     {
@@ -41,6 +43,8 @@ const router = createBrowserRouter([
       { path: "users", element: <UsersPage /> },
       { path: "user/:id", element: <UserDetailPage /> },
       { path: "/profile", element: <ProfilePage /> },
+      { path: "/settings", element: <SettingsPage /> },
+      {path: "/billing", element: <BillingPage />},
       { path: "/logs", element: <LogPage /> },
     ],
   },

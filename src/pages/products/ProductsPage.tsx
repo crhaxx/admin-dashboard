@@ -207,14 +207,14 @@ export default function ProductsPage() {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-semibold text-black dark:text-white">
+          <h1 className="text-3xl font-semibold text-black">
             Products
           </h1>
 
           <div className="flex items-center gap-3">
             <button
               onClick={() => setCategoryModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-[#222] hover:bg-gray-300 dark:hover:bg-[#333] text-black dark:text-white rounded-lg transition"
+              className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-black rounded-lg transition"
             >
               <Folder size={18} />
               Categories
@@ -231,12 +231,12 @@ export default function ProductsPage() {
         </div>
 
         {/* Search */}
-        <div className="flex items-center gap-2 bg-white dark:bg-[#111] border border-gray-300 dark:border-[#333] px-3 py-2 rounded-lg w-full max-w-md">
+        <div className="flex items-center gap-2 bg-white border border-gray-300 px-3 py-2 rounded-lg w-full max-w-md">
           <Search size={18} className="text-gray-500" />
           <input
             type="text"
             placeholder="Search products..."
-            className="bg-transparent outline-none text-black dark:text-white w-full"
+            className="bg-transparent outline-none text-black w-full"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -244,7 +244,7 @@ export default function ProductsPage() {
 
         {/* Category filter */}
         <select
-          className="p-2 rounded bg-white dark:bg-[#111] border border-gray-300 dark:border-[#333] text-black dark:text-white"
+          className="p-2 rounded bg-white border border-gray-300 text-black"
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
         >
@@ -257,15 +257,15 @@ export default function ProductsPage() {
         </select>
 
         {/* Products Table */}
-        <div className="bg-white dark:bg-[#111] rounded-xl shadow border border-gray-200 dark:border-[#333]">
+        <div className="bg-white rounded-xl shadow border border-gray-200">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-gray-200 dark:border-[#333]">
-                <th className="p-4 text-black dark:text-white">Product</th>
-                <th className="p-4 text-black dark:text-white">Price</th>
-                <th className="p-4 text-black dark:text-white">Stock</th>
-                <th className="p-4 text-black dark:text-white">Categories</th>
-                <th className="p-4 text-right text-black dark:text-white">
+              <tr className="border-b border-gray-200">
+                <th className="p-4 text-black">Product</th>
+                <th className="p-4 text-black">Price</th>
+                <th className="p-4 text-black">Stock</th>
+                <th className="p-4 text-black">Categories</th>
+                <th className="p-4 text-right text-black">
                   Actions
                 </th>
               </tr>
@@ -276,17 +276,15 @@ export default function ProductsPage() {
                 <tr>
                   <td
                     colSpan={5}
-                    className="p-4 text-center text-gray-500 dark:text-gray-400"
-                  >
-                    No products found
-                  </td>
+                    className="p-4 text-center text-gray-500"
+                  >No products found</td>
                 </tr>
               )}
 
               {filtered.map((product) => (
                 <tr
                   key={product.id}
-                  className="border-b border-gray-100 dark:border-[#222] hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition"
+                  className="border-b border-gray-100 hover:bg-gray-50 transition"
                 >
                   <td className="p-4 flex items-center gap-3">
                     <img
@@ -296,23 +294,23 @@ export default function ProductsPage() {
                       }
                       className="w-12 h-12 rounded-lg object-cover"
                     />
-                    <span className="text-black dark:text-white">
+                    <span className="text-black">
                       {product.name}
                     </span>
                   </td>
 
-                  <td className="p-4 text-black dark:text-white">
-                    {product.price} CZK
+                  <td className="p-4 text-black">
+                    {product.price.toLocaleString('cs-CZ')} CZK
                   </td>
 
-                  <td className="p-4 text-black dark:text-white">
+                  <td className="p-4 text-black">
                     {product.stock}
                   </td>
 
-                  <td className="p-4 text-black dark:text-white">
+                  <td className="p-4 text-black">
                     <div className="flex gap-2 flex-wrap">
                       {(product.categories || []).length === 0 && (
-                        <span className="text-gray-500 dark:text-gray-400">
+                        <span className="text-gray-500">
                           -
                         </span>
                       )}
@@ -340,20 +338,20 @@ export default function ProductsPage() {
                         });
                         setEditModal(true);
                       }}
-                      className="p-2 bg-gray-200 dark:bg-[#222] rounded-lg hover:bg-gray-300 dark:hover:bg-[#333] transition"
+                      className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
                     >
-                      <Pencil size={16} color="#ffffff" />
+                      <Pencil size={16} color="#000000" />
                     </button>
 
                     <button
                       onClick={() =>
                         setConfirmDelete({ open: true, id: product.id })
                       }
-                      className="p-2 bg-red-200 dark:bg-red-900 rounded-lg hover:bg-red-300 dark:hover:bg-red-800 transition"
+                      className="p-2 bg-red-200 rounded-lg hover:bg-red-300 transition"
                     >
                       <Trash2
                         size={16}
-                        className="text-red-700 dark:text-red-300"
+                        className="text-red-600"
                       />
                     </button>
                   </td>
@@ -367,19 +365,19 @@ export default function ProductsPage() {
       {/* Delete Confirm */}
       {confirmDelete.open && (
         <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-[#111] p-6 rounded-xl shadow-xl w-full max-w-sm border border-gray-300 dark:border-[#333]">
-            <h2 className="text-xl font-semibold text-black dark:text-white mb-3">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm border border-gray-300">
+            <h2 className="text-xl font-semibold text-black mb-3">
               Delete Product?
             </h2>
 
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
+            <p className="text-gray-600 mb-6">
               This action cannot be undone.
             </p>
 
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setConfirmDelete({ open: false, id: null })}
-                className="px-4 py-2 rounded-lg text-black dark:text-white bg-gray-200 dark:bg-[#222] hover:bg-gray-300 dark:hover:bg-[#333] transition"
+                className="px-4 py-2 rounded-lg text-black bg-gray-200 hover:bg-gray-300 transition"
               >
                 Cancel
               </button>
@@ -398,8 +396,8 @@ export default function ProductsPage() {
       {/* Add Product popup */}
       {addModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-[#111] p-6 rounded-xl shadow-xl w-full max-w-md border border-gray-300 dark:border-[#333]">
-            <h2 className="text-xl font-semibold text-black dark:text-white mb-4">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md border border-gray-300 dark:border-[#333]">
+            <h2 className="text-xl font-semibold text-black mb-4">
               Add Product
             </h2>
 
@@ -407,7 +405,7 @@ export default function ProductsPage() {
               <input
                 type="text"
                 placeholder="Product name"
-                className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
+                className="w-full p-2 rounded bg-gray-100 text-black"
                 value={newProduct.name}
                 onChange={(e) =>
                   setNewProduct({ ...newProduct, name: e.target.value })
@@ -445,17 +443,17 @@ export default function ProductsPage() {
                     onClick={() =>
                       setShowAddCategoryDropdown(!showAddCategoryDropdown)
                     }
-                    className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-left text-black dark:text-white"
+                    className="w-full p-2 rounded bg-gray-100 text-left text-black"
                   >
                     Add category…
                   </button>
 
                   {showAddCategoryDropdown && (
-                    <div className="absolute z-50 mt-1 w-full bg-white dark:bg-[#111] border border-gray-300 dark:border-[#333] rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    <div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                       {categories.map((cat) => (
   <div
     key={cat.id}
-    className="flex justify-between items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-[#222] cursor-pointer"
+    className="flex justify-between items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
     onClick={() => {
       setNewProduct((prev) => {
         if (prev.categories.includes(cat.name)) return prev;
@@ -467,7 +465,7 @@ export default function ProductsPage() {
       setShowAddCategoryDropdown(false);
     }}
   >
-    <span className="text-black dark:text-white">
+    <span className="text-black">
       {cat.name}
     </span>
 
@@ -483,11 +481,11 @@ export default function ProductsPage() {
   </div>
 ))}
 
-                      <div className="flex gap-2 p-2 border-t border-gray-300 dark:border-[#333]">
+                      <div className="flex gap-2 p-2 border-t border-gray-300">
                         <input
                           type="text"
                           placeholder="New category"
-                          className="flex-1 p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
+                          className="flex-1 p-2 rounded bg-gray-100 text-black"
                           value={quickCategory}
                           onChange={(e) =>
                             setQuickCategory(e.target.value)
@@ -533,7 +531,7 @@ export default function ProductsPage() {
               <input
                 type="number"
                 placeholder="Price in CZK"
-                className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
+                className="w-full p-2 rounded bg-gray-100 text-black"
                 value={newProduct.price}
                 onChange={(e) =>
                   setNewProduct({ ...newProduct, price: e.target.value })
@@ -543,7 +541,7 @@ export default function ProductsPage() {
               <input
                 type="number"
                 placeholder="Stock"
-                className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
+                className="w-full p-2 rounded bg-gray-100 text-black"
                 value={newProduct.stock}
                 onChange={(e) =>
                   setNewProduct({ ...newProduct, stock: e.target.value })
@@ -553,7 +551,7 @@ export default function ProductsPage() {
               <input
                 type="text"
                 placeholder="Image URL"
-                className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
+                className="w-full p-2 rounded bg-gray-100 text-black"
                 value={newProduct.imageUrl}
                 onChange={(e) =>
                   setNewProduct({
@@ -567,7 +565,7 @@ export default function ProductsPage() {
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setAddModal(false)}
-                className="px-4 py-2 rounded-lg text-black dark:text-white bg-gray-200 dark:bg-[#222] hover:bg-gray-300 dark:hover:bg-[#333] transition"
+                className="px-4 py-2 rounded-lg text-black bg-gray-200 hover:bg-gray-300 transition"
               >
                 Cancel
               </button>
@@ -586,8 +584,8 @@ export default function ProductsPage() {
       {/* Update Product popup */}
       {editModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-[#111] p-6 rounded-xl shadow-xl w-full max-w-md border border-gray-300 dark:border-[#333]">
-            <h2 className="text-xl font-semibold text-black dark:text-white mb-4">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md border border-gray-300">
+            <h2 className="text-xl font-semibold text-black mb-4">
               Edit Product
             </h2>
 
@@ -595,7 +593,7 @@ export default function ProductsPage() {
               <input
                 type="text"
                 placeholder="Product name"
-                className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
+                className="w-full p-2 rounded bg-gray-100 text-black"
                 value={editProduct.name}
                 onChange={(e) =>
                   setEditProduct({ ...editProduct, name: e.target.value })
@@ -631,17 +629,17 @@ export default function ProductsPage() {
                 <div className="relative">
                   <button
                     onClick={() => setShowEditCategoryDropdown(!showEditCategoryDropdown)}
-                    className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-left text-black dark:text-white"
+                    className="w-full p-2 rounded bg-gray-100 text-left text-black"
                   >
                     Add category…
                   </button>
 
                   {showEditCategoryDropdown && (
-                    <div className="absolute z-50 mt-1 w-full bg-white dark:bg-[#111] border border-gray-300 dark:border-[#333] rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    <div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                       {categories.map((cat) => (
   <div
     key={cat.id}
-    className="flex justify-between items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-[#222] cursor-pointer"
+    className="flex justify-between items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
     onClick={() => {
       setEditProduct((prev) => {
         if (prev.categories.includes(cat.name)) return prev;
@@ -653,7 +651,7 @@ export default function ProductsPage() {
       setShowEditCategoryDropdown(false);
     }}
   >
-    <span className="text-black dark:text-white">
+    <span className="text-black">
       {cat.name}
     </span>
 
@@ -669,11 +667,11 @@ export default function ProductsPage() {
   </div>
 ))}
 
-                      <div className="flex gap-2 p-2 border-t border-gray-300 dark:border-[#333]">
+                      <div className="flex gap-2 p-2 border-t border-gray-300">
                         <input
                           type="text"
                           placeholder="New category"
-                          className="flex-1 p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
+                          className="flex-1 p-2 rounded bg-gray-100 text-black"
                           value={quickCategory}
                           onChange={(e) =>
                             setQuickCategory(e.target.value)
@@ -685,7 +683,6 @@ export default function ProductsPage() {
     const name = quickCategory.trim();
     if (!name) return;
 
-    // 🔥 kontrola duplicity
     const exists = categories.some(
       (c) => c.name.toLowerCase() === name.toLowerCase()
     );
@@ -720,7 +717,7 @@ export default function ProductsPage() {
               <input
                 type="number"
                 placeholder="Price in CZK"
-                className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
+                className="w-full p-2 rounded bg-gray-100 text-black"
                 value={editProduct.price}
                 onChange={(e) =>
                   setEditProduct({ ...editProduct, price: e.target.value })
@@ -730,7 +727,7 @@ export default function ProductsPage() {
               <input
                 type="number"
                 placeholder="Stock"
-                className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
+                className="w-full p-2 rounded bg-gray-100 text-black"
                 value={editProduct.stock}
                 onChange={(e) =>
                   setEditProduct({ ...editProduct, stock: e.target.value })
@@ -740,7 +737,7 @@ export default function ProductsPage() {
               <input
                 type="text"
                 placeholder="Image URL"
-                className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white"
+                className="w-full p-2 rounded bg-gray-100 text-black"
                 value={editProduct.imageUrl}
                 onChange={(e) =>
                   setEditProduct({
@@ -754,7 +751,7 @@ export default function ProductsPage() {
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setEditModal(false)}
-                className="px-4 py-2 rounded-lg text-black dark:text-white bg-gray-200 dark:bg-[#222] hover:bg-gray-300 dark:hover:bg-[#333] transition"
+                className="px-4 py-2 rounded-lg text-black bg-gray-200 hover:bg-gray-300 transition"
               >
                 Cancel
               </button>
@@ -773,8 +770,8 @@ export default function ProductsPage() {
       {/* Categories popup */}
       {categoryModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-[#111] p-6 rounded-xl shadow-xl w-full max-w-sm border border-gray-300 dark:border-[#333]">
-            <h2 className="text-xl font-semibold text-black dark:text-white mb-4">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm border border-gray-300">
+            <h2 className="text-xl font-semibold text-black mb-4">
               Manage Categories
             </h2>
 
@@ -782,7 +779,7 @@ export default function ProductsPage() {
               {categories.map((cat) => (
                 <div
                   key={cat.id}
-                  className="p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white flex justify-between items-center"
+                  className="p-2 rounded bg-gray-100 text-black flex justify-between items-center"
                 >
                   <span>{cat.name}</span>
                   <button
@@ -800,7 +797,7 @@ export default function ProductsPage() {
             <input
               type="text"
               placeholder="New category name"
-              className="w-full p-2 rounded bg-gray-100 dark:bg-[#222] text-black dark:text-white mb-4"
+              className="w-full p-2 rounded bg-gray-100 text-black mb-4"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
             />
@@ -808,7 +805,7 @@ export default function ProductsPage() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setCategoryModal(false)}
-                className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-[#222] text-black dark:text-white hover:bg-gray-300 dark:hover:bg-[#333] transition"
+                className="px-4 py-2 rounded-lg bg-gray-200 text-black hover:bg-gray-300 transition"
               >
                 Close
               </button>
