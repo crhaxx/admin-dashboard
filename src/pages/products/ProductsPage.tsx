@@ -284,6 +284,17 @@ export default function ProductsPage() {
               {filtered.map((product) => (
                 <tr
                   key={product.id}
+                  onClick={() => {
+                        setEditProduct({
+                          id: product.id,
+                          name: product.name,
+                          price: String(product.price),
+                          stock: String(product.stock),
+                          imageUrl: product.images?.[0] || "",
+                          categories: product.categories || [],
+                        });
+                        setEditModal(true);
+                      }}
                   className="border-b border-gray-100 hover:bg-gray-50 transition"
                 >
                   <td className="p-4 flex items-center gap-3">

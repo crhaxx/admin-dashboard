@@ -75,7 +75,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      const userRef = doc(db, "users", user.uid);
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      return false;
+    }
+
+    const userData = userSnap.data();
+
+    if (userData.disabled === true) {
+      return false;
+    }
+
     await updateDoc(userRef, {
       lastLogin: serverTimestamp(),
     });

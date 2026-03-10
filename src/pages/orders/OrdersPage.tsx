@@ -109,6 +109,7 @@ const randomUser = {
 
   return (
     <div className="p-6">
+      <div className="flex justify-between items-center">
       <h1 className="text-3xl font-semibold text-black mb-4">Orders</h1>
 
       <button
@@ -117,6 +118,7 @@ const randomUser = {
 >
   Add Test Order
 </button>
+</div>
 
       <div className="bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
         <table className="w-full text-left">
@@ -134,6 +136,7 @@ const randomUser = {
             {orders.map((order) => (
               <tr
                 key={order.id}
+                onClick={() => navigate(`/order/${order.id}`)}
                 className="border-t border-gray-200 hover:bg-gray-100 transition"
               >
                 <td className="p-4 font-medium text-black">{order.customerName}</td>

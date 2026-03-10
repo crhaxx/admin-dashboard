@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../providers/AuthProvider";
 
 export default function LoginPage() {
@@ -24,7 +24,7 @@ export default function LoginPage() {
 
   if (redirecting) {
   return (
-    <div className="h-screen flex items-center justify-center text-gray-600 dark:text-gray-300 text-xl">
+    <div className="h-screen flex items-center justify-center text-black dark:text-gray-300 text-xl">
       Redirecting...
     </div>
   );
@@ -98,16 +98,6 @@ export default function LoginPage() {
             Login
           </button>
         </form>
-
-        <p className="text-center text-gray-600 dark:text-gray-400 mt-6 text-sm">
-          Don’t have an account?{" "}
-          <Link
-            to="/register"
-            className="text-black dark:text-white font-semibold hover:underline"
-          >
-            Register
-          </Link>
-        </p>
       </div>
     </div>
   );
